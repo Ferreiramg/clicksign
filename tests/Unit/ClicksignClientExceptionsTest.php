@@ -17,14 +17,14 @@ describe('ClicksignClient Exception Handling', function () {
 
     it('client has correct constructor', function () {
         expect($this->client)->toBeInstanceOf(ClicksignClient::class);
-        
+
         // Test that we can access protected properties via reflection
         $reflection = new ReflectionClass($this->client);
         $accessTokenProperty = $reflection->getProperty('accessToken');
         $accessTokenProperty->setAccessible(true);
         $baseUrlProperty = $reflection->getProperty('baseUrl');
         $baseUrlProperty->setAccessible(true);
-        
+
         expect($accessTokenProperty->getValue($this->client))->toBe('test-token');
         expect($baseUrlProperty->getValue($this->client))->toBe('https://api.test.com');
     });
@@ -35,8 +35,10 @@ describe('ClicksignClient Exception Handling', function () {
         $method->setAccessible(true);
 
         // Mock a response object
-        $response = new class {
+        $response = new class
+        {
             private int $status;
+
             private array $data;
 
             public function __construct(int $status = 200, array $data = [])
@@ -68,20 +70,20 @@ describe('ClicksignClient Exception Handling', function () {
 
         // Test 401 response
         $authResponse = new $response(401, ['message' => 'Unauthorized']);
-        expect(fn() => $method->invoke($this->client, $authResponse))
+        expect(fn () => $method->invoke($this->client, $authResponse))
             ->toThrow(AuthenticationException::class, 'Unauthorized');
 
         // Test 404 response
         $notFoundResponse = new $response(404, ['message' => 'Not found']);
-        expect(fn() => $method->invoke($this->client, $notFoundResponse))
+        expect(fn () => $method->invoke($this->client, $notFoundResponse))
             ->toThrow(DocumentNotFoundException::class, 'Not found');
 
         // Test 422 response with errors
         $validationResponse = new $response(422, [
             'message' => 'Validation failed',
-            'errors' => ['email' => ['Invalid email']]
+            'errors' => ['email' => ['Invalid email']],
         ]);
-        
+
         try {
             $method->invoke($this->client, $validationResponse);
         } catch (ValidationException $e) {
@@ -91,17 +93,17 @@ describe('ClicksignClient Exception Handling', function () {
 
         // Test 500 response
         $serverErrorResponse = new $response(500, ['message' => 'Server error']);
-        expect(fn() => $method->invoke($this->client, $serverErrorResponse))
+        expect(fn () => $method->invoke($this->client, $serverErrorResponse))
             ->toThrow(ClicksignException::class, 'Server error');
 
         // Test response with error field instead of message
         $errorResponse = new $response(400, ['error' => 'Bad request']);
-        expect(fn() => $method->invoke($this->client, $errorResponse))
+        expect(fn () => $method->invoke($this->client, $errorResponse))
             ->toThrow(ClicksignException::class, 'Bad request');
 
         // Test response with no message or error
         $unknownResponse = new $response(400, ['something' => 'else']);
-        expect(fn() => $method->invoke($this->client, $unknownResponse))
+        expect(fn () => $method->invoke($this->client, $unknownResponse))
             ->toThrow(ClicksignException::class, 'Unknown error occurred');
     });
 });

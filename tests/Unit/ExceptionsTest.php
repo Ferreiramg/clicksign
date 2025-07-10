@@ -22,7 +22,7 @@ describe('ClicksignException', function () {
     });
 
     it('extends Exception', function () {
-        $exception = new ClicksignException();
+        $exception = new ClicksignException;
 
         expect($exception)->toBeInstanceOf(\Exception::class);
     });
@@ -30,7 +30,7 @@ describe('ClicksignException', function () {
 
 describe('AuthenticationException', function () {
     it('can be instantiated with default message', function () {
-        $exception = new AuthenticationException();
+        $exception = new AuthenticationException;
 
         expect($exception)->toBeInstanceOf(AuthenticationException::class);
         expect($exception)->toBeInstanceOf(ClicksignException::class);
@@ -46,7 +46,7 @@ describe('AuthenticationException', function () {
     });
 
     it('has correct HTTP status code', function () {
-        $exception = new AuthenticationException();
+        $exception = new AuthenticationException;
 
         expect($exception->getCode())->toBe(401);
     });
@@ -92,7 +92,7 @@ describe('ValidationException', function () {
     it('can be instantiated with message and errors', function () {
         $errors = [
             'email' => ['The email field is required.'],
-            'name' => ['The name field is required.']
+            'name' => ['The name field is required.'],
         ];
         $exception = new ValidationException('Validation failed', $errors);
 
@@ -127,7 +127,7 @@ describe('ValidationException', function () {
             'user.name' => ['Name is required'],
             'user.email' => ['Email is invalid', 'Email is required'],
             'documents' => ['At least one document is required'],
-            'signers.0.email' => ['First signer email is invalid']
+            'signers.0.email' => ['First signer email is invalid'],
         ];
 
         $exception = new ValidationException('Complex validation failed', $errors);

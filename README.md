@@ -4,7 +4,12 @@
 [![Tests](https://img.shields.io/github/actions/workflow/status/Ferreiramg/clicksign/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/Ferreiramg/clicksign/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/ferreiramg/clicksign.svg?style=flat-square)](https://packagist.org/packages/ferreiramg/clicksign)
 
-SDK para integração com a API do Clicksign em aplicações Laravel.
+SDK para integração com a API do Clicksign em aplicações Laravel 12.
+
+## Requisitos
+
+- PHP 8.2 ou superior
+- Laravel 12.x
 
 ## Instalação
 

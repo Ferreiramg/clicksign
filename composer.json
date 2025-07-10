@@ -1,6 +1,6 @@
 {
     "name": "ferreiramg/clicksign",
-    "description": "SDK para integrar Clicksign em Laravel",
+    "description": "SDK para integrar Clicksign em Laravel 12",
     "type": "library",
     "keywords": [
         "laravel",
@@ -12,15 +12,15 @@
     "homepage": "https://github.com/Ferreiramg/clicksign",
     "license": "MIT",
     "require": {
-        "php": "^8.1",
-        "illuminate/support": "^11.0|^12.0",
-        "illuminate/http": "^11.0|^12.0"
+        "php": "^8.2",
+        "illuminate/support": "^12.0",
+        "illuminate/http": "^12.0"
     },
     "require-dev": {
         "pestphp/pest": "^3.8",
         "laravel/pint": "^1.23",
         "phpunit/phpunit": "^10.0|^11.0",
-        "orchestra/testbench": "^9.0|^10.0"
+        "orchestra/testbench": "^10.0"
     },
     "autoload": {
         "psr-4": {

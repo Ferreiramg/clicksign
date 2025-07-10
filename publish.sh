@@ -18,12 +18,12 @@ git add .
 
 # 4. Fazer commit inicial
 echo "💾 Fazendo commit inicial..."
-git commit -m "Initial commit: Clicksign Laravel SDK
+git commit -m "Initial commit: Clicksign Laravel 12 SDK
 
 - SDK completo para integração com Clicksign
-- Testes automatizados com Pest
+- Testes automatizados com Pest (73.5% cobertura)
 - GitHub Actions para CI/CD
-- Suporte para Laravel 11+ e PHP 8.1+
+- Suporte para Laravel 12+ e PHP 8.2+
 - Documentação completa"
 
 # 5. Definir branch principal

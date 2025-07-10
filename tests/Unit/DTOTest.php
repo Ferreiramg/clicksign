@@ -63,7 +63,7 @@ it('can build signature request', function () {
 it('can create signer with partial data', function () {
     $data = [
         'email' => 'jane@example.com',
-        'name' => 'Jane Doe'
+        'name' => 'Jane Doe',
     ];
 
     $signer = Signer::fromArray($data);
@@ -137,7 +137,7 @@ it('can check signer status methods', function () {
 it('can create document with minimal data', function () {
     $data = [
         'key' => 'doc-minimal',
-        'filename' => 'simple.pdf'
+        'filename' => 'simple.pdf',
     ];
 
     $document = Document::fromArray($data);
@@ -177,7 +177,7 @@ it('can convert document to array', function () {
         'signers' => [['key' => 'signer-1']],
         'events' => [['type' => 'created']],
         'download_url' => 'https://example.com/download',
-        'metadata' => ['custom' => 'data']
+        'metadata' => ['custom' => 'data'],
     ]);
 });
 
@@ -215,7 +215,7 @@ it('can create signature request', function () {
 
 it('can add signers to signature request', function () {
     $request = SignatureRequest::create('/path/to/document.pdf', 'contract.pdf');
-    
+
     $requestWithSigner = $request->addSigner(
         email: 'john@example.com',
         name: 'John Doe',
