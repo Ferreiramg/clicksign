@@ -13,6 +13,8 @@
 
 uses(Tests\TestCase::class)->in('Feature');
 
+// Unit tests don't need the full Laravel application
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
