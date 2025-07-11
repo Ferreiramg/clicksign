@@ -1,10 +1,10 @@
-# Clicksign Laravel SDK
+# Clicksign Laravel SDK v3
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ferreiramg/clicksign.svg?style=flat-square)](https://packagist.org/packages/ferreiramg/clicksign)
 [![Tests](https://img.shields.io/github/actions/workflow/status/Ferreiramg/clicksign/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/Ferreiramg/clicksign/actions/workflows/run-tests.yml)
 [![Total Downloads](https://img.shields.io/packagist/dt/ferreiramg/clicksign.svg?style=flat-square)](https://packagist.org/packages/ferreiramg/clicksign)
 
-SDK para integração com a API do Clicksign em aplicações Laravel 12.
+SDK para integração com a **API v3** do Clicksign em aplicações Laravel. Este pacote foi completamente atualizado para trabalhar com a nova arquitetura baseada em envelopes da API v3.
 
 ## Requisitos
 
@@ -31,179 +31,308 @@ Configure suas variáveis de ambiente no arquivo `.env`:
 
 ```env
 CLICKSIGN_ACCESS_TOKEN=your_access_token_here
-CLICKSIGN_BASE_URL=https://app.clicksign.com/api/v1
+CLICKSIGN_BASE_URL=https://app.clicksign.com/api/v3
+CLICKSIGN_SANDBOX=false
+CLICKSIGN_SANDBOX_URL=https://sandbox.clicksign.com/api/v3
 CLICKSIGN_WEBHOOK_SECRET=your_webhook_secret_here
 ```
 
-## Uso Básico
+## Fluxo Básico de Assinatura
 
-### Facade
+A API v3 do Clicksign segue um fluxo baseado em **envelopes**:
+
+1. **Envelope**: Container que agrupa documentos, signatários e requisitos
+2. **Documento**: O arquivo que será assinado
+3. **Signatário**: Pessoa que irá assinar o documento
+4. **Requisitos**: Regras de assinatura e autenticação
+5. **Ativação**: Colocar o envelope em execução
+6. **Notificação**: Enviar notificações aos signatários
+
+## Uso com Workflow Helper
+
+### Fluxo Completo Simplificado
+
+```php
+use Clicksign\Support\ClicksignWorkflow;
+use Clicksign\Facades\Clicksign;
+
+// Instanciar o workflow helper
+$workflow = new ClicksignWorkflow(app(ClicksignClientInterface::class));
+
+// Dados do signatário
+$signers = [
+    [
+        'name' => 'João Silva',
+        'email' => 'joao@example.com',
+        'birthday' => '1990-01-01',
+        'has_documentation' => true
+    ]
+];
+
+// Criar workflow completo
+$result = $workflow->createSignatureWorkflow(
+    envelopeName: 'Contrato de Prestação de Serviços',
+    filename: 'contrato.pdf',
+    contentBase64: base64_encode(file_get_contents('path/to/contrato.pdf')),
+    signers: $signers,
+    envelopeOptions: [
+        'locale' => 'pt-BR',
+        'auto_close' => true,
+        'remind_interval' => 3,
+        'deadline_at' => '2025-12-31T23:59:59.000-03:00'
+    ]
+);
+
+$envelopeId = $result['envelope']['data']['id'];
+
+// Ativar o processo de assinatura
+$workflow->startSignatureProcess($envelopeId);
+
+// Enviar notificação
+$workflow->sendNotification($envelopeId, 'Por favor, assine o documento.');
+```
+
+### Fluxo com Template
+
+```php
+// Criar workflow usando template
+$result = $workflow->createTemplateWorkflow(
+    envelopeName: 'Contrato Personalizado',
+    filename: 'contrato_preenchido.docx',
+    templateId: 'template_123',
+    templateData: [
+        'nome_cliente' => 'João Silva',
+        'valor_contrato' => 'R$ 5.000,00',
+        'data_vencimento' => '31/12/2025'
+    ],
+    signers: $signers
+);
+```
+
+## Uso Direto da API
+
+### Criando um Envelope
 
 ```php
 use Clicksign\Facades\Clicksign;
+use Clicksign\DTO\Envelope;
 
-// Criar um documento
-$document = Clicksign::createDocument([
-    'filename' => 'contrato.pdf',
-    'content' => base64_encode(file_get_contents('path/to/document.pdf'))
+$envelope = new Envelope(
+    name: 'Meu Envelope',
+    locale: 'pt-BR',
+    autoClose: true,
+    remindInterval: 3,
+    blockAfterRefusal: true,
+    deadlineAt: '2025-12-31T23:59:59.000-03:00'
+);
+
+$response = Clicksign::createEnvelope($envelope->toArray());
+$envelopeId = $response['data']['id'];
+```
+
+### Adicionando um Documento
+
+```php
+use Clicksign\DTO\Document;
+
+// Documento a partir de arquivo
+$document = Document::fromFile(
+    filename: 'contrato.pdf',
+    contentBase64: base64_encode(file_get_contents('path/to/arquivo.pdf'))
+);
+
+$response = Clicksign::createDocument($envelopeId, $document->toArray());
+$documentId = $response['data']['id'];
+
+// Documento a partir de template
+$document = Document::fromTemplate(
+    filename: 'contrato_preenchido.docx',
+    templateId: 'template_123',
+    templateData: [
+        'nome' => 'João Silva',
+        'valor' => 'R$ 1.000,00'
+    ]
+);
+```
+
+### Adicionando Signatários
+
+```php
+use Clicksign\DTO\Signer;
+
+$signer = Signer::create(
+    name: 'João Silva',
+    email: 'joao@example.com',
+    birthday: '1990-01-01',
+    hasDocumentation: true
+);
+
+$response = Clicksign::createSigner($envelopeId, $signer->toArray());
+$signerId = $response['data']['id'];
+```
+
+### Adicionando Requisitos
+
+```php
+use Clicksign\DTO\Requirement;
+
+// Requisito de assinatura
+$signatureReq = Requirement::createSignatureRequirement(
+    documentId: $documentId,
+    signerId: $signerId,
+    role: 'sign'
+);
+
+Clicksign::createRequirement($envelopeId, $signatureReq->toArray());
+
+// Requisito de autenticação
+$authReq = Requirement::createAuthRequirement(
+    documentId: $documentId,
+    signerId: $signerId,
+    auth: 'email'
+);
+
+Clicksign::createRequirement($envelopeId, $authReq->toArray());
+```
+
+### Ativando o Envelope
+
+```php
+use Clicksign\DTO\Envelope;
+
+$envelope = new Envelope(
+    id: $envelopeId,
+    status: 'running'
+);
+
+Clicksign::updateEnvelope($envelopeId, $envelope->toUpdateArray());
+```
+
+### Enviando Notificações
+
+```php
+Clicksign::sendNotification($envelopeId, [
+    'type' => 'notifications',
+    'attributes' => [
+        'message' => 'Por favor, assine o documento urgentemente.'
+    ]
 ]);
-
-// Adicionar um signatário
-$signer = Clicksign::addSigner($document['key'], [
-    'email' => 'joao@exemplo.com',
-    'name' => 'João Silva',
-    'documentation' => '12345678901'
-]);
-
-// Obter documento
-$document = Clicksign::getDocument($documentKey);
-
-// Listar documentos
-$documents = Clicksign::listDocuments();
 ```
 
-### Injeção de Dependência
+## Operações em Massa
+
+### Atualizações em Lote de Requisitos
 
 ```php
-use Clicksign\Contracts\ClicksignClientInterface;
+$operations = [
+    [
+        'op' => 'remove',
+        'ref' => [
+            'type' => 'requirements',
+            'id' => 'requirement_123'
+        ]
+    ],
+    [
+        'op' => 'add',
+        'data' => [
+            'type' => 'requirements',
+            'attributes' => [
+                'action' => 'provide_evidence',
+                'auth' => 'icp_brasil'
+            ],
+            'relationships' => [
+                'document' => [
+                    'data' => ['type' => 'documents', 'id' => $documentId]
+                ],
+                'signer' => [
+                    'data' => ['type' => 'signers', 'id' => $signerId]
+                ]
+            ]
+        ]
+    ]
+];
 
-class DocumentController extends Controller
-{
-    public function __construct(
-        private ClicksignClientInterface $clicksign
-    ) {}
-
-    public function store(Request $request)
-    {
-        $document = $this->clicksign->createDocument([
-            'filename' => $request->file('document')->getClientOriginalName(),
-            'content' => base64_encode($request->file('document')->getContent())
-        ]);
-
-        return response()->json($document);
-    }
-}
+Clicksign::bulkRequirements($envelopeId, ['atomic:operations' => $operations]);
 ```
 
-### Usando DTOs
+## Templates
+
+### Criando um Template
 
 ```php
-use Clicksign\DTO\SignatureRequest;
+use Clicksign\DTO\Template;
 
-// Construir uma solicitação de assinatura
-$request = SignatureRequest::create('/path/to/document.pdf', 'contrato.pdf')
-    ->addSigner('joao@exemplo.com', 'João Silva', '12345678901')
-    ->addSigner('maria@exemplo.com', 'Maria Santos')
-    ->withMessage('Por favor, assinem este contrato')
-    ->ordered() // Assinatura sequencial
-    ->skipEmail(); // Não enviar email automático
+$template = new Template(
+    name: 'Contrato Padrão',
+    contentBase64: base64_encode(file_get_contents('template.docx')),
+    color: '#577b8d'
+);
 
-$document = Clicksign::createDocument($request->toArray());
+$response = Clicksign::createTemplate($template->toArray());
 ```
 
-## Testes
+## Status e Monitoramento
 
-### Usando o Fake Client
-
-Para testes, você pode usar o `ClicksignFake`:
+### Verificando Status do Envelope
 
 ```php
-use Clicksign\Http\ClicksignFake;
-use Clicksign\Contracts\ClicksignClientInterface;
+$status = $workflow->getEnvelopeStatus($envelopeId);
 
-// No seu teste
-$this->app->bind(ClicksignClientInterface::class, ClicksignFake::class);
-
-// Ou usando o Facade
-Clicksign::fake();
+echo "Status do envelope: " . $status['envelope']['data']['attributes']['status'];
+echo "Signatários: " . count($status['signers']['data']);
+echo "Requisitos: " . count($status['requirements']['data']);
 ```
 
-### Executar os testes
+### Eventos
 
-```bash
-composer test
+```php
+// Eventos de um documento específico
+$documentEvents = Clicksign::getDocumentEvents($envelopeId, $documentId);
+
+// Eventos de todos os documentos do envelope
+$envelopeEvents = Clicksign::getEnvelopeEvents($envelopeId);
 ```
 
-### Com cobertura
+## Modo Sandbox
 
-```bash
-composer test-coverage
+Para testes, configure o modo sandbox:
+
+```env
+CLICKSIGN_SANDBOX=true
 ```
 
-## Formatação de Código
+Ou use diretamente:
 
-```bash
-composer format
+```php
+$client = new ClicksignClient(
+    accessToken: 'your_token',
+    baseUrl: 'https://sandbox.clicksign.com/api/v3'
+);
 ```
-
-## Verificar formatação
-
-```bash
-composer format-check
-```
-
-## Recursos
-
-- ✅ Criação e gerenciamento de documentos
-- ✅ Adição e remoção de signatários
-- ✅ Download de documentos
-- ✅ Cancelamento de documentos
-- ✅ Reenvio de notificações
-- ✅ DTOs tipados
-- ✅ Client fake para testes
-- ✅ Verificação de assinaturas de webhook
-- ✅ Facade Laravel
-- ✅ Service Provider
-- ✅ Configuração publicável
 
 ## Tratamento de Erros
 
-O pacote inclui exceções específicas para diferentes cenários:
-
 ```php
 use Clicksign\Exceptions\{
-    ClicksignException,
     AuthenticationException,
     DocumentNotFoundException,
-    ValidationException
+    ValidationException,
+    ClicksignException
 };
 
 try {
-    $document = Clicksign::getDocument('documento-inexistente');
+    $response = Clicksign::createEnvelope($envelope->toArray());
+} catch (AuthenticationException $e) {
+    // Token inválido
+} catch (ValidationException $e) {
+    // Dados inválidos
+    $errors = $e->getErrors();
 } catch (DocumentNotFoundException $e) {
     // Documento não encontrado
-} catch (AuthenticationException $e) {
-    // Erro de autenticação
-} catch (ValidationException $e) {
-    // Erro de validação
-    $errors = $e->getErrors();
 } catch (ClicksignException $e) {
     // Outros erros da API
 }
 ```
-
-## Verificação de Webhooks
-
-```php
-use Clicksign\Support\SignatureHash;
-
-$data = $request->getContent();
-$signature = $request->header('X-Clicksign-Signature');
-$secret = config('clicksign.webhook_secret');
-
-if (SignatureHash::verify($data, $signature, $secret)) {
-    // Webhook válido
-    $payload = json_decode($data, true);
-    // Processar webhook...
-} else {
-    // Webhook inválido
-    abort(400, 'Invalid webhook signature');
-}
-```
-
-## Changelog
-
-Por favor, veja [CHANGELOG](CHANGELOG.md) para mais informações sobre as mudanças recentes.
 
 ## Contribuindo
 
@@ -211,13 +340,13 @@ Por favor, veja [CONTRIBUTING](CONTRIBUTING.md) para detalhes.
 
 ## Segurança
 
-Se você descobrir alguma vulnerabilidade de segurança, por favor envie um e-mail para luis@lpdeveloper.com.br.
+Se você descobrir alguma vulnerabilidade de segurança, por favor envie um e-mail para ferreiramg@example.com ao invés de usar o issue tracker.
 
 ## Créditos
 
-- [Luís Ferreira](https://github.com/lpdev)
+- [Ferreiramg](https://github.com/Ferreiramg)
 - [Todos os Contribuidores](../../contributors)
 
 ## Licença
 
-A Licença MIT (MIT). Por favor, veja [License File](LICENSE.md) para mais informações.
+A licença MIT (MIT). Por favor veja [License File](LICENSE.md) para mais informações.
