@@ -57,8 +57,8 @@ class Signer
                 'group' => $this->group,
                 'communicate_events' => $this->communicateEvents,
                 'metadata' => $this->metadata,
-            ], fn($value) => $value !== null)
-        ], fn($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null),
+        ], fn ($value) => $value !== null && $value !== []);
     }
 
     /**
@@ -79,7 +79,7 @@ class Signer
             communicateEvents: $communicateEvents ?? [
                 'document_signed' => 'email',
                 'signature_request' => 'email',
-                'signature_reminder' => 'email'
+                'signature_reminder' => 'email',
             ]
         );
     }

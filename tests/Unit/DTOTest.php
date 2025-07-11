@@ -1,10 +1,10 @@
 <?php
 
 use Clicksign\DTO\Document;
-use Clicksign\DTO\SignatureRequest;
-use Clicksign\DTO\Signer;
 use Clicksign\DTO\Envelope;
 use Clicksign\DTO\Requirement;
+use Clicksign\DTO\SignatureRequest;
+use Clicksign\DTO\Signer;
 use Clicksign\DTO\Template;
 
 it('can create document dto from array', function () {
@@ -15,7 +15,7 @@ it('can create document dto from array', function () {
             'filename' => 'contract.pdf',
             'status' => 'running',
             'uploaded_at' => '2023-01-01T00:00:00Z',
-        ]
+        ],
     ];
 
     $document = Document::fromArray($data);
@@ -36,7 +36,7 @@ it('can create signer dto from array', function () {
             'name' => 'John Doe',
             'status' => 'pending',
             'created_at' => '2023-01-01T00:00:00Z',
-        ]
+        ],
     ];
 
     $signer = Signer::fromArray($data);
@@ -55,7 +55,7 @@ it('can create signer with partial data', function () {
         'attributes' => [
             'email' => 'jane@example.com',
             'name' => 'Jane Doe',
-        ]
+        ],
     ];
 
     $signer = Signer::fromArray($data);
@@ -85,8 +85,8 @@ it('can check signer status methods', function () {
         'attributes' => [
             'email' => 'signed@example.com',
             'name' => 'Signed User',
-            'status' => 'signed'
-        ]
+            'status' => 'signed',
+        ],
     ]);
     expect($signedSigner->hasSigned())->toBeTrue();
     expect($signedSigner->isPending())->toBeFalse();
@@ -97,8 +97,8 @@ it('can check signer status methods', function () {
         'attributes' => [
             'email' => 'pending@example.com',
             'name' => 'Pending User',
-            'status' => 'pending'
-        ]
+            'status' => 'pending',
+        ],
     ]);
     expect($pendingSigner->hasSigned())->toBeFalse();
     expect($pendingSigner->isPending())->toBeTrue();
@@ -110,7 +110,7 @@ it('can create document with minimal data', function () {
         'id' => 'doc-minimal',
         'attributes' => [
             'filename' => 'simple.pdf',
-        ]
+        ],
     ];
 
     $document = Document::fromArray($data);
@@ -134,8 +134,8 @@ it('can check document status methods', function () {
         'id' => 'doc-1',
         'attributes' => [
             'filename' => 'test.pdf',
-            'status' => 'completed'
-        ]
+            'status' => 'completed',
+        ],
     ]);
     expect($completedDoc->isCompleted())->toBeTrue();
     expect($completedDoc->isCancelled())->toBeFalse();
@@ -146,8 +146,8 @@ it('can check document status methods', function () {
         'id' => 'doc-2',
         'attributes' => [
             'filename' => 'test.pdf',
-            'status' => 'cancelled'
-        ]
+            'status' => 'cancelled',
+        ],
     ]);
     expect($cancelledDoc->isCancelled())->toBeTrue();
     expect($cancelledDoc->isCompleted())->toBeFalse();
@@ -157,8 +157,8 @@ it('can check document status methods', function () {
         'id' => 'doc-3',
         'attributes' => [
             'filename' => 'test.pdf',
-            'status' => 'running'
-        ]
+            'status' => 'running',
+        ],
     ]);
     expect($pendingDoc->isPending())->toBeTrue();
     expect($pendingDoc->isCompleted())->toBeFalse();
@@ -188,7 +188,7 @@ it('can create template', function () {
 
 it('can build signature request', function () {
     $request = new SignatureRequest(documentPath: '/path/to/document.pdf', filename: 'contract.pdf');
-    
+
     $request = $request->addSigner('john@example.com', 'John Doe');
     $request = $request->addSigner('jane@example.com', 'Jane Doe');
 
@@ -197,7 +197,7 @@ it('can build signature request', function () {
 
 it('can add signers to signature request', function () {
     $request = new SignatureRequest(documentPath: '/path/test.pdf', filename: 'test.pdf');
-    
+
     $request = $request->addSigner('test1@example.com', 'Test User 1');
     $request = $request->addSigner('test2@example.com', 'Test User 2');
 

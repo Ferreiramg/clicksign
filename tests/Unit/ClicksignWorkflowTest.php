@@ -1,31 +1,29 @@
 <?php
 
-use Clicksign\Support\ClicksignWorkflow;
-use Clicksign\Http\ClicksignFake;
 use Clicksign\DTO\Envelope;
-use Clicksign\DTO\Document;
-use Clicksign\DTO\Signer;
+use Clicksign\Http\ClicksignFake;
+use Clicksign\Support\ClicksignWorkflow;
 
 beforeEach(function () {
-    $this->client = new ClicksignFake();
+    $this->client = new ClicksignFake;
     $this->workflow = new ClicksignWorkflow($this->client);
 });
 
 it('can create complete signature workflow', function () {
     $result = $this->workflow->createSignatureWorkflow(
         'Test Contract', // envelopeName
-        'contract.pdf', // filename  
+        'contract.pdf', // filename
         base64_encode('fake pdf content'), // contentBase64
         [ // signers
             [
                 'email' => 'john@example.com',
                 'name' => 'John Doe',
-                'documentation_number' => '12345678901'
+                'documentation_number' => '12345678901',
             ],
             [
-                'email' => 'jane@example.com', 
-                'name' => 'Jane Doe'
-            ]
+                'email' => 'jane@example.com',
+                'name' => 'Jane Doe',
+            ],
         ]
     );
 
@@ -46,8 +44,8 @@ it('can create template workflow', function () {
         [ // signers
             [
                 'email' => 'client@example.com',
-                'name' => 'Client Name'
-            ]
+                'name' => 'Client Name',
+            ],
         ]
     );
 
@@ -74,7 +72,7 @@ it('can create workflow with custom options', function () {
         'custom.pdf',
         base64_encode('custom content'),
         [
-            ['email' => 'test@example.com', 'name' => 'Test User']
+            ['email' => 'test@example.com', 'name' => 'Test User'],
         ],
         ['locale' => 'en-US', 'auto_close' => false], // envelope options
         ['role' => 'sign'] // requirement options
@@ -87,7 +85,7 @@ it('can create workflow with custom options', function () {
 it('handles workflow errors gracefully', function () {
     $this->client->shouldFail();
 
-    expect(fn() => $this->workflow->createSignatureWorkflow(
+    expect(fn () => $this->workflow->createSignatureWorkflow(
         'Test',
         'test.pdf',
         base64_encode('content'),

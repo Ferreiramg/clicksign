@@ -53,8 +53,8 @@ class Template
                 'status' => $this->status,
                 'data' => $this->data,
                 'metadata' => $this->metadata,
-            ], fn($value) => $value !== null)
-        ], fn($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null),
+        ], fn ($value) => $value !== null && $value !== []);
     }
 
     /**
@@ -63,6 +63,7 @@ class Template
     public function hasRequiredField(string $field): bool
     {
         $requiredFields = $this->metadata['required_fields'] ?? [];
+
         return in_array($field, $requiredFields);
     }
 
@@ -71,11 +72,12 @@ class Template
      */
     public function getVariables(): array
     {
-        if (!$this->content) {
+        if (! $this->content) {
             return [];
         }
 
         preg_match_all('/\{\{([^}]+)\}\}/', $this->content, $matches);
+
         return $matches[1] ?? [];
     }
 

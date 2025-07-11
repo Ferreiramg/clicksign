@@ -84,9 +84,9 @@ describe('ClicksignClient Exception Handling', function () {
                 [
                     'detail' => 'Validation failed',
                     'source' => ['pointer' => '/data/attributes/email'],
-                    'title' => 'Invalid email'
-                ]
-            ]
+                    'title' => 'Invalid email',
+                ],
+            ],
         ]);
 
         try {

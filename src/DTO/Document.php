@@ -44,8 +44,8 @@ class Document
                 'content_base64' => $this->contentBase64,
                 'template' => $this->template,
                 'metadata' => $this->metadata,
-            ], fn($value) => $value !== null)
-        ], fn($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null),
+        ], fn ($value) => $value !== null && $value !== []);
     }
 
     /**
@@ -70,7 +70,7 @@ class Document
             template: [
                 'key' => $templateId,
                 'data' => $templateData,
-                'metadata' => $metadata ?? []
+                'metadata' => $metadata ?? [],
             ]
         );
     }

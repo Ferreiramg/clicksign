@@ -49,19 +49,19 @@ class Requirement
                 'type' => $this->type,
                 'status' => $this->status,
                 'metadata' => $this->metadata,
-            ], fn($value) => $value !== null),
-            'relationships' => []
+            ], fn ($value) => $value !== null),
+            'relationships' => [],
         ];
 
         if ($this->documentId) {
             $data['relationships']['document'] = [
-                'data' => ['type' => 'documents', 'id' => $this->documentId]
+                'data' => ['type' => 'documents', 'id' => $this->documentId],
             ];
         }
 
         if ($this->signerId) {
             $data['relationships']['signer'] = [
-                'data' => ['type' => 'signers', 'id' => $this->signerId]
+                'data' => ['type' => 'signers', 'id' => $this->signerId],
             ];
         }
 

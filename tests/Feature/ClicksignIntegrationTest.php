@@ -1,10 +1,10 @@
 <?php
 
+use Clicksign\DTO\Document;
+use Clicksign\DTO\Envelope;
+use Clicksign\DTO\Signer;
 use Clicksign\Facades\Clicksign;
 use Clicksign\Http\ClicksignFake;
-use Clicksign\DTO\Envelope;
-use Clicksign\DTO\Document;
-use Clicksign\DTO\Signer;
 
 beforeEach(function () {
     // Use fake client for testing
@@ -13,7 +13,7 @@ beforeEach(function () {
 
 it('can create envelope', function () {
     $envelope = new Envelope(name: 'Test Envelope');
-    
+
     $response = Clicksign::createEnvelope($envelope->toArray());
 
     expect($response)->toHaveKey('data');
@@ -39,7 +39,7 @@ it('can list envelopes', function () {
     // Create some envelopes
     $envelope1 = new Envelope(name: 'Envelope 1');
     $envelope2 = new Envelope(name: 'Envelope 2');
-    
+
     Clicksign::createEnvelope($envelope1->toArray());
     Clicksign::createEnvelope($envelope2->toArray());
 
@@ -87,7 +87,7 @@ it('can send notifications', function () {
 
     // Send notifications
     $response = Clicksign::sendNotifications($envelopeId, [
-        'message' => 'Please sign the document'
+        'message' => 'Please sign the document',
     ]);
 
     expect($response)->toHaveKey('data');

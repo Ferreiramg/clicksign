@@ -8,15 +8,21 @@ use DateTime;
 class ClicksignFake implements ClicksignClientInterface
 {
     protected array $envelopes = [];
+
     protected array $documents = [];
+
     protected array $signers = [];
+
     protected array $requirements = [];
+
     protected array $templates = [];
+
     protected bool $shouldFail = false;
 
     public function shouldFail(bool $fail = true): self
     {
         $this->shouldFail = $fail;
+
         return $this;
     }
 
@@ -27,9 +33,9 @@ class ClicksignFake implements ClicksignClientInterface
             throw new \Exception('Fake failure');
         }
 
-        $envelopeId = 'envelope_' . uniqid();
+        $envelopeId = 'envelope_'.uniqid();
         $attributes = $data['attributes'] ?? [];
-        
+
         $this->envelopes[$envelopeId] = [
             'id' => $envelopeId,
             'type' => 'envelopes',
@@ -42,28 +48,28 @@ class ClicksignFake implements ClicksignClientInterface
                 'block_after_refusal' => true,
                 'created_at' => (new DateTime)->format(DateTime::ATOM),
                 'updated_at' => (new DateTime)->format(DateTime::ATOM),
-            ], $attributes)
+            ], $attributes),
         ];
 
         return [
-            'data' => $this->envelopes[$envelopeId]
+            'data' => $this->envelopes[$envelopeId],
         ];
     }
 
     public function getEnvelope(string $envelopeId): array
     {
-        if ($this->shouldFail || !isset($this->envelopes[$envelopeId])) {
+        if ($this->shouldFail || ! isset($this->envelopes[$envelopeId])) {
             throw new \Exception('Envelope not found');
         }
 
         return [
-            'data' => $this->envelopes[$envelopeId]
+            'data' => $this->envelopes[$envelopeId],
         ];
     }
 
     public function updateEnvelope(string $envelopeId, array $data): array
     {
-        if ($this->shouldFail || !isset($this->envelopes[$envelopeId])) {
+        if ($this->shouldFail || ! isset($this->envelopes[$envelopeId])) {
             throw new \Exception('Envelope not found');
         }
 
@@ -74,14 +80,14 @@ class ClicksignFake implements ClicksignClientInterface
         );
 
         return [
-            'data' => $this->envelopes[$envelopeId]
+            'data' => $this->envelopes[$envelopeId],
         ];
     }
 
     public function listEnvelopes(array $filters = []): array
     {
         return [
-            'data' => array_values($this->envelopes)
+            'data' => array_values($this->envelopes),
         ];
     }
 
@@ -92,9 +98,9 @@ class ClicksignFake implements ClicksignClientInterface
             throw new \Exception('Fake failure');
         }
 
-        $documentId = 'document_' . uniqid();
+        $documentId = 'document_'.uniqid();
         $attributes = $data['attributes'] ?? [];
-        
+
         $this->documents[$envelopeId][$documentId] = [
             'id' => $documentId,
             'type' => 'documents',
@@ -102,29 +108,29 @@ class ClicksignFake implements ClicksignClientInterface
                 'filename' => 'test-document.pdf',
                 'status' => 'draft',
                 'created_at' => (new DateTime)->format(DateTime::ATOM),
-            ], $attributes)
+            ], $attributes),
         ];
 
         return [
-            'data' => $this->documents[$envelopeId][$documentId]
+            'data' => $this->documents[$envelopeId][$documentId],
         ];
     }
 
     public function getDocument(string $envelopeId, string $documentId): array
     {
-        if ($this->shouldFail || !isset($this->documents[$envelopeId][$documentId])) {
+        if ($this->shouldFail || ! isset($this->documents[$envelopeId][$documentId])) {
             throw new \Exception('Document not found');
         }
 
         return [
-            'data' => $this->documents[$envelopeId][$documentId]
+            'data' => $this->documents[$envelopeId][$documentId],
         ];
     }
 
     public function listDocuments(string $envelopeId): array
     {
         return [
-            'data' => array_values($this->documents[$envelopeId] ?? [])
+            'data' => array_values($this->documents[$envelopeId] ?? []),
         ];
     }
 
@@ -135,9 +141,9 @@ class ClicksignFake implements ClicksignClientInterface
             throw new \Exception('Fake failure');
         }
 
-        $signerId = 'signer_' . uniqid();
+        $signerId = 'signer_'.uniqid();
         $attributes = $data['attributes'] ?? [];
-        
+
         $this->signers[$envelopeId][$signerId] = [
             'id' => $signerId,
             'type' => 'signers',
@@ -147,35 +153,35 @@ class ClicksignFake implements ClicksignClientInterface
                 'status' => 'pending',
                 'has_documentation' => true,
                 'created_at' => (new DateTime)->format(DateTime::ATOM),
-            ], $attributes)
+            ], $attributes),
         ];
 
         return [
-            'data' => $this->signers[$envelopeId][$signerId]
+            'data' => $this->signers[$envelopeId][$signerId],
         ];
     }
 
     public function getSigner(string $envelopeId, string $signerId): array
     {
-        if ($this->shouldFail || !isset($this->signers[$envelopeId][$signerId])) {
+        if ($this->shouldFail || ! isset($this->signers[$envelopeId][$signerId])) {
             throw new \Exception('Signer not found');
         }
 
         return [
-            'data' => $this->signers[$envelopeId][$signerId]
+            'data' => $this->signers[$envelopeId][$signerId],
         ];
     }
 
     public function listSigners(string $envelopeId): array
     {
         return [
-            'data' => array_values($this->signers[$envelopeId] ?? [])
+            'data' => array_values($this->signers[$envelopeId] ?? []),
         ];
     }
 
     public function updateSigner(string $envelopeId, string $signerId, array $data): array
     {
-        if ($this->shouldFail || !isset($this->signers[$envelopeId][$signerId])) {
+        if ($this->shouldFail || ! isset($this->signers[$envelopeId][$signerId])) {
             throw new \Exception('Signer not found');
         }
 
@@ -186,17 +192,18 @@ class ClicksignFake implements ClicksignClientInterface
         );
 
         return [
-            'data' => $this->signers[$envelopeId][$signerId]
+            'data' => $this->signers[$envelopeId][$signerId],
         ];
     }
 
     public function deleteSigner(string $envelopeId, string $signerId): array
     {
-        if ($this->shouldFail || !isset($this->signers[$envelopeId][$signerId])) {
+        if ($this->shouldFail || ! isset($this->signers[$envelopeId][$signerId])) {
             throw new \Exception('Signer not found');
         }
 
         unset($this->signers[$envelopeId][$signerId]);
+
         return ['data' => null];
     }
 
@@ -207,9 +214,9 @@ class ClicksignFake implements ClicksignClientInterface
             throw new \Exception('Fake failure');
         }
 
-        $requirementId = 'requirement_' . uniqid();
+        $requirementId = 'requirement_'.uniqid();
         $attributes = $data['attributes'] ?? [];
-        
+
         $this->requirements[$envelopeId][$requirementId] = [
             'id' => $requirementId,
             'type' => 'requirements',
@@ -218,39 +225,40 @@ class ClicksignFake implements ClicksignClientInterface
                 'role' => 'sign',
                 'created_at' => (new DateTime)->format(DateTime::ATOM),
             ], $attributes),
-            'relationships' => $data['relationships'] ?? []
+            'relationships' => $data['relationships'] ?? [],
         ];
 
         return [
-            'data' => $this->requirements[$envelopeId][$requirementId]
+            'data' => $this->requirements[$envelopeId][$requirementId],
         ];
     }
 
     public function getRequirement(string $envelopeId, string $requirementId): array
     {
-        if ($this->shouldFail || !isset($this->requirements[$envelopeId][$requirementId])) {
+        if ($this->shouldFail || ! isset($this->requirements[$envelopeId][$requirementId])) {
             throw new \Exception('Requirement not found');
         }
 
         return [
-            'data' => $this->requirements[$envelopeId][$requirementId]
+            'data' => $this->requirements[$envelopeId][$requirementId],
         ];
     }
 
     public function listRequirements(string $envelopeId): array
     {
         return [
-            'data' => array_values($this->requirements[$envelopeId] ?? [])
+            'data' => array_values($this->requirements[$envelopeId] ?? []),
         ];
     }
 
     public function deleteRequirement(string $envelopeId, string $requirementId): array
     {
-        if ($this->shouldFail || !isset($this->requirements[$envelopeId][$requirementId])) {
+        if ($this->shouldFail || ! isset($this->requirements[$envelopeId][$requirementId])) {
             throw new \Exception('Requirement not found');
         }
 
         unset($this->requirements[$envelopeId][$requirementId]);
+
         return ['data' => null];
     }
 
@@ -262,13 +270,13 @@ class ClicksignFake implements ClicksignClientInterface
 
         return [
             'data' => [
-                'id' => 'bulk_' . uniqid(),
+                'id' => 'bulk_'.uniqid(),
                 'type' => 'bulk_operations',
                 'attributes' => [
                     'status' => 'completed',
-                    'operations_count' => count($operations['atomic:operations'] ?? [])
-                ]
-            ]
+                    'operations_count' => count($operations['atomic:operations'] ?? []),
+                ],
+            ],
         ];
     }
 
@@ -281,13 +289,13 @@ class ClicksignFake implements ClicksignClientInterface
 
         return [
             'data' => [
-                'id' => 'notification_' . uniqid(),
+                'id' => 'notification_'.uniqid(),
                 'type' => 'notifications',
                 'attributes' => [
                     'status' => 'sent',
-                    'sent_at' => (new DateTime)->format(DateTime::ATOM)
-                ]
-            ]
+                    'sent_at' => (new DateTime)->format(DateTime::ATOM),
+                ],
+            ],
         ];
     }
 
@@ -299,14 +307,14 @@ class ClicksignFake implements ClicksignClientInterface
 
         return [
             'data' => [
-                'id' => 'notification_' . uniqid(),
+                'id' => 'notification_'.uniqid(),
                 'type' => 'notifications',
                 'attributes' => [
                     'message' => $data['message'] ?? 'Notification sent',
                     'sent_at' => now()->toISOString(),
-                    'envelope_id' => $envelopeId
-                ]
-            ]
+                    'envelope_id' => $envelopeId,
+                ],
+            ],
         ];
     }
 
@@ -317,44 +325,44 @@ class ClicksignFake implements ClicksignClientInterface
             throw new \Exception('Template creation failed');
         }
 
-        $templateId = 'template_' . uniqid();
+        $templateId = 'template_'.uniqid();
         $attributes = $data['attributes'] ?? [];
-        
+
         $this->templates[$templateId] = [
             'id' => $templateId,
             'type' => 'templates',
             'attributes' => array_merge([
                 'name' => 'Test Template',
                 'created_at' => (new DateTime)->format(DateTime::ATOM),
-            ], $attributes)
+            ], $attributes),
         ];
 
         return [
-            'data' => $this->templates[$templateId]
+            'data' => $this->templates[$templateId],
         ];
     }
 
     public function getTemplate(string $templateId): array
     {
-        if ($this->shouldFail || !isset($this->templates[$templateId])) {
+        if ($this->shouldFail || ! isset($this->templates[$templateId])) {
             throw new \Exception('Template not found');
         }
 
         return [
-            'data' => $this->templates[$templateId]
+            'data' => $this->templates[$templateId],
         ];
     }
 
     public function listTemplates(array $filters = []): array
     {
         return [
-            'data' => array_values($this->templates)
+            'data' => array_values($this->templates),
         ];
     }
 
     public function updateTemplate(string $templateId, array $data): array
     {
-        if ($this->shouldFail || !isset($this->templates[$templateId])) {
+        if ($this->shouldFail || ! isset($this->templates[$templateId])) {
             throw new \Exception('Template not found');
         }
 
@@ -365,17 +373,18 @@ class ClicksignFake implements ClicksignClientInterface
         );
 
         return [
-            'data' => $this->templates[$templateId]
+            'data' => $this->templates[$templateId],
         ];
     }
 
     public function deleteTemplate(string $templateId): array
     {
-        if ($this->shouldFail || !isset($this->templates[$templateId])) {
+        if ($this->shouldFail || ! isset($this->templates[$templateId])) {
             throw new \Exception('Template not found');
         }
 
         unset($this->templates[$templateId]);
+
         return ['data' => null];
     }
 
@@ -385,14 +394,14 @@ class ClicksignFake implements ClicksignClientInterface
         return [
             'data' => [
                 [
-                    'id' => 'event_' . uniqid(),
+                    'id' => 'event_'.uniqid(),
                     'type' => 'events',
                     'attributes' => [
                         'action' => 'document_created',
-                        'created_at' => (new DateTime)->format(DateTime::ATOM)
-                    ]
-                ]
-            ]
+                        'created_at' => (new DateTime)->format(DateTime::ATOM),
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -401,14 +410,14 @@ class ClicksignFake implements ClicksignClientInterface
         return [
             'data' => [
                 [
-                    'id' => 'event_' . uniqid(),
+                    'id' => 'event_'.uniqid(),
                     'type' => 'events',
                     'attributes' => [
                         'action' => 'envelope_created',
-                        'created_at' => (new DateTime)->format(DateTime::ATOM)
-                    ]
-                ]
-            ]
+                        'created_at' => (new DateTime)->format(DateTime::ATOM),
+                    ],
+                ],
+            ],
         ];
     }
 

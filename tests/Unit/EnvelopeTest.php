@@ -1,7 +1,7 @@
 <?php
 
-use Clicksign\DTO\Envelope;
 use Clicksign\DTO\Document;
+use Clicksign\DTO\Envelope;
 use Clicksign\DTO\Signer;
 
 it('can create envelope with all parameters', function () {
@@ -32,21 +32,21 @@ it('can create envelope from array with relationships', function () {
             'auto_close' => false,
             'remind_interval' => 14,
             'status' => 'draft',
-            'created_at' => '2024-01-01T00:00:00Z'
+            'created_at' => '2024-01-01T00:00:00Z',
         ],
         'relationships' => [
             'documents' => [
                 'data' => [
                     ['type' => 'documents', 'id' => 'doc-1'],
-                    ['type' => 'documents', 'id' => 'doc-2']
-                ]
+                    ['type' => 'documents', 'id' => 'doc-2'],
+                ],
             ],
             'signers' => [
                 'data' => [
-                    ['type' => 'signers', 'id' => 'signer-1']
-                ]
-            ]
-        ]
+                    ['type' => 'signers', 'id' => 'signer-1'],
+                ],
+            ],
+        ],
     ];
 
     $envelope = Envelope::fromArray($data);
@@ -114,7 +114,7 @@ it('can add signer to envelope', function () {
 
 it('can add multiple documents and signers', function () {
     $envelope = new Envelope(name: 'Multi Test');
-    
+
     $doc1 = new Document(filename: 'doc1.pdf');
     $doc2 = new Document(filename: 'doc2.pdf');
     $signer1 = new Signer(email: 'user1@example.com', name: 'User 1');
@@ -177,9 +177,9 @@ it('can get envelope progress percentage', function () {
         name: 'Progress Test',
         signers: [
             ['status' => 'signed'],
-            ['status' => 'signed'], 
+            ['status' => 'signed'],
             ['status' => 'pending'],
-            ['status' => 'pending']
+            ['status' => 'pending'],
         ]
     );
 

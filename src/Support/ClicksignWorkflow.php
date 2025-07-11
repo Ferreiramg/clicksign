@@ -50,7 +50,7 @@ class ClicksignWorkflow
             'envelope' => $envelopeResponse,
             'document' => $documentResponse,
             'signers' => [],
-            'requirements' => []
+            'requirements' => [],
         ];
 
         // Step 3: Create signers and requirements
@@ -97,6 +97,7 @@ class ClicksignWorkflow
     public function startSignatureProcess(string $envelopeId): array
     {
         $envelope = new Envelope(status: 'running');
+
         return $this->client->updateEnvelope($envelopeId, $envelope->toUpdateArray());
     }
 
@@ -109,6 +110,7 @@ class ClicksignWorkflow
         if ($message) {
             $data['message'] = $message;
         }
+
         return $this->client->sendNotification($envelopeId, $data);
     }
 
@@ -146,7 +148,7 @@ class ClicksignWorkflow
             'envelope' => $envelopeResponse,
             'document' => $documentResponse,
             'signers' => [],
-            'requirements' => []
+            'requirements' => [],
         ];
 
         // Step 3: Create signers and requirements
@@ -195,7 +197,7 @@ class ClicksignWorkflow
         return [
             'envelope' => $this->client->getEnvelope($envelopeId),
             'signers' => $this->client->listSigners($envelopeId),
-            'requirements' => $this->client->listRequirements($envelopeId)
+            'requirements' => $this->client->listRequirements($envelopeId),
         ];
     }
 
@@ -209,7 +211,7 @@ class ClicksignWorkflow
         return [
             'envelope_id' => $envelopeId,
             'operations' => $operations,
-            'status' => 'not_implemented'
+            'status' => 'not_implemented',
         ];
     }
 
@@ -221,7 +223,7 @@ class ClicksignWorkflow
         $errorData = [
             'error' => true,
             'message' => $error->getMessage(),
-            'type' => get_class($error)
+            'type' => get_class($error),
         ];
 
         if ($envelopeId) {

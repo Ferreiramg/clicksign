@@ -2,14 +2,17 @@
 
 /**
  * Exemplo de Controller demonstrando o uso da API v3 do Clicksign
- * 
+ *
  * Este exemplo mostra como implementar o fluxo básico de assinatura
  * seguindo o script bash fornecido, mas adaptado para Laravel.
  */
 
-use Clicksign\Support\ClicksignWorkflow;
+use Clicksign\DTO\Document;
+use Clicksign\DTO\Envelope;
+use Clicksign\DTO\Requirement;
+use Clicksign\DTO\Signer;
 use Clicksign\Facades\Clicksign;
-use Clicksign\DTO\{Envelope, Document, Signer, Requirement};
+use Clicksign\Support\ClicksignWorkflow;
 use Illuminate\Http\JsonResponse;
 
 class ClicksignExampleController
@@ -42,7 +45,7 @@ class ClicksignExampleController
             // 2. Criar Documento
             $contentBase64 = 'data:application/pdf;base64,JVBERi0xLj0K...'; // Seu PDF em base64
             $document = Document::fromFile('arquivo.pdf', $contentBase64);
-            
+
             $documentResponse = Clicksign::createDocument($envelopeId, $document->toArray());
             $documentId = $documentResponse['data']['id'];
 
@@ -89,13 +92,13 @@ class ClicksignExampleController
                 'envelope_id' => $envelopeId,
                 'document_id' => $documentId,
                 'signer_id' => $signerId,
-                'workflow_completed' => true
+                'workflow_completed' => true,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -111,8 +114,8 @@ class ClicksignExampleController
                     'name' => 'João Silva',
                     'email' => 'joao@example.com',
                     'birthday' => '1990-01-01',
-                    'has_documentation' => true
-                ]
+                    'has_documentation' => true,
+                ],
             ];
 
             // Simulando conteúdo de um PDF
@@ -127,7 +130,7 @@ class ClicksignExampleController
                     'locale' => 'pt-BR',
                     'auto_close' => true,
                     'remind_interval' => 3,
-                    'deadline_at' => '2025-12-31T23:59:59.000-03:00'
+                    'deadline_at' => '2025-12-31T23:59:59.000-03:00',
                 ]
             );
 
@@ -142,13 +145,13 @@ class ClicksignExampleController
             return response()->json([
                 'success' => true,
                 'envelope_id' => $envelopeId,
-                'message' => 'Processo de assinatura iniciado com sucesso!'
+                'message' => 'Processo de assinatura iniciado com sucesso!',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -164,8 +167,8 @@ class ClicksignExampleController
                     'name' => 'Maria Santos',
                     'email' => 'maria@example.com',
                     'birthday' => '1985-05-15',
-                    'has_documentation' => true
-                ]
+                    'has_documentation' => true,
+                ],
             ];
 
             $result = $this->workflow->createTemplateWorkflow(
@@ -176,7 +179,7 @@ class ClicksignExampleController
                     'nome_cliente' => 'Maria Santos',
                     'valor_contrato' => 'R$ 5.000,00',
                     'data_inicio' => '01/01/2025',
-                    'data_fim' => '31/12/2025'
+                    'data_fim' => '31/12/2025',
                 ],
                 signers: $signers
             );
@@ -190,13 +193,13 @@ class ClicksignExampleController
             return response()->json([
                 'success' => true,
                 'envelope_id' => $envelopeId,
-                'message' => 'Contrato criado via template!'
+                'message' => 'Contrato criado via template!',
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -213,13 +216,13 @@ class ClicksignExampleController
                 'success' => true,
                 'envelope' => $status['envelope']['data'],
                 'signers' => $status['signers']['data'],
-                'requirements' => $status['requirements']['data']
+                'requirements' => $status['requirements']['data'],
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -241,8 +244,8 @@ class ClicksignExampleController
                     'op' => 'remove',
                     'ref' => [
                         'type' => 'requirements',
-                        'id' => $oldRequirementId
-                    ]
+                        'id' => $oldRequirementId,
+                    ],
                 ],
                 [
                     'op' => 'add',
@@ -250,31 +253,31 @@ class ClicksignExampleController
                         'type' => 'requirements',
                         'attributes' => [
                             'action' => 'provide_evidence',
-                            'auth' => 'icp_brasil'
+                            'auth' => 'icp_brasil',
                         ],
                         'relationships' => [
                             'document' => [
-                                'data' => ['type' => 'documents', 'id' => $documentId]
+                                'data' => ['type' => 'documents', 'id' => $documentId],
                             ],
                             'signer' => [
-                                'data' => ['type' => 'signers', 'id' => $signerId]
-                            ]
-                        ]
-                    ]
-                ]
+                                'data' => ['type' => 'signers', 'id' => $signerId],
+                            ],
+                        ],
+                    ],
+                ],
             ];
 
             $result = $this->workflow->bulkUpdateRequirements($envelopeId, $operations);
 
             return response()->json([
                 'success' => true,
-                'result' => $result
+                'result' => $result,
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }

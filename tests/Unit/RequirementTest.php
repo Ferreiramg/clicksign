@@ -4,7 +4,7 @@ use Clicksign\DTO\Requirement;
 
 it('can create signature requirement with custom type', function () {
     $requirement = Requirement::createSignatureRequirement('doc-123', 'signer-456', 'draw');
-    
+
     expect($requirement->action)->toBe('sign');
     expect($requirement->documentId)->toBe('doc-123');
     expect($requirement->signerId)->toBe('signer-456');
@@ -13,7 +13,7 @@ it('can create signature requirement with custom type', function () {
 
 it('can create auth requirement with phone', function () {
     $requirement = Requirement::createAuthRequirement('signer-789', 'phone');
-    
+
     expect($requirement->action)->toBe('approve');
     expect($requirement->signerId)->toBe('signer-789');
     expect($requirement->type)->toBe('phone');
@@ -25,12 +25,12 @@ it('can create requirement from array', function () {
         'id' => 'req-123',
         'attributes' => [
             'action' => 'sign',
-            'type' => 'click'
+            'type' => 'click',
         ],
         'relationships' => [
             'document' => ['data' => ['id' => 'doc-123']],
-            'signer' => ['data' => ['id' => 'signer-456']]
-        ]
+            'signer' => ['data' => ['id' => 'signer-456']],
+        ],
     ];
 
     $requirement = Requirement::fromArray($data);
@@ -72,7 +72,7 @@ it('can create requirement with metadata', function () {
 
 it('can handle requirement without document id', function () {
     $requirement = Requirement::createAuthRequirement('signer-123', 'email');
-    
+
     expect($requirement->documentId)->toBeNull();
     expect($requirement->signerId)->toBe('signer-123');
     expect($requirement->action)->toBe('approve');
@@ -84,14 +84,14 @@ it('can check if requirement is signature type', function () {
 
     expect($signRequirement->isSignatureRequirement())->toBeTrue();
     expect($signRequirement->isAuthRequirement())->toBeFalse();
-    
+
     expect($authRequirement->isSignatureRequirement())->toBeFalse();
     expect($authRequirement->isAuthRequirement())->toBeTrue();
 });
 
 it('can check if requirement is auth type', function () {
     $authRequirement = Requirement::createAuthRequirement('signer-1', 'doc');
-    
+
     expect($authRequirement->isAuthRequirement())->toBeTrue();
     expect($authRequirement->isSignatureRequirement())->toBeFalse();
 });
@@ -102,8 +102,8 @@ it('can get requirement status', function () {
         'id' => 'req-123',
         'attributes' => [
             'action' => 'sign',
-            'status' => 'completed'
-        ]
+            'status' => 'completed',
+        ],
     ]);
 
     expect($requirement->isCompleted())->toBeTrue();
@@ -114,18 +114,18 @@ it('can handle different requirement statuses', function () {
     $pendingReq = Requirement::fromArray([
         'type' => 'requirements',
         'id' => 'req-1',
-        'attributes' => ['status' => 'pending']
+        'attributes' => ['status' => 'pending'],
     ]);
 
     $completedReq = Requirement::fromArray([
-        'type' => 'requirements', 
+        'type' => 'requirements',
         'id' => 'req-2',
-        'attributes' => ['status' => 'completed']
+        'attributes' => ['status' => 'completed'],
     ]);
 
     expect($pendingReq->isPending())->toBeTrue();
     expect($pendingReq->isCompleted())->toBeFalse();
-    
+
     expect($completedReq->isPending())->toBeFalse();
     expect($completedReq->isCompleted())->toBeTrue();
 });

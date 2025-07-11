@@ -1,6 +1,5 @@
 <?php
 
-use Clicksign\Exceptions\DocumentNotFoundException;
 use Clicksign\Http\ClicksignFake;
 
 it('can fake envelope creation', function () {
@@ -8,7 +7,7 @@ it('can fake envelope creation', function () {
 
     $envelope = $fake->createEnvelope([
         'type' => 'envelopes',
-        'attributes' => ['name' => 'Test Envelope']
+        'attributes' => ['name' => 'Test Envelope'],
     ]);
 
     expect($envelope)->toHaveKey('data');
@@ -19,16 +18,16 @@ it('can fake envelope creation', function () {
 
 it('can fake document creation in envelope', function () {
     $fake = new ClicksignFake;
-    
+
     $envelope = $fake->createEnvelope([
         'type' => 'envelopes',
-        'attributes' => ['name' => 'Test Envelope']
+        'attributes' => ['name' => 'Test Envelope'],
     ]);
     $envelopeId = $envelope['data']['id'];
 
     $document = $fake->createDocument($envelopeId, [
         'type' => 'documents',
-        'attributes' => ['filename' => 'test.pdf']
+        'attributes' => ['filename' => 'test.pdf'],
     ]);
 
     expect($document)->toHaveKey('data');
@@ -39,10 +38,10 @@ it('can fake document creation in envelope', function () {
 
 it('can fake signer creation', function () {
     $fake = new ClicksignFake;
-    
+
     $envelope = $fake->createEnvelope([
         'type' => 'envelopes',
-        'attributes' => ['name' => 'Test Envelope']
+        'attributes' => ['name' => 'Test Envelope'],
     ]);
     $envelopeId = $envelope['data']['id'];
 
@@ -50,8 +49,8 @@ it('can fake signer creation', function () {
         'type' => 'signers',
         'attributes' => [
             'name' => 'John Doe',
-            'email' => 'john@example.com'
-        ]
+            'email' => 'john@example.com',
+        ],
     ]);
 
     expect($signer)->toHaveKey('data');
@@ -63,10 +62,10 @@ it('can fake signer creation', function () {
 
 it('can fake requirement creation', function () {
     $fake = new ClicksignFake;
-    
+
     $envelope = $fake->createEnvelope([
         'type' => 'envelopes',
-        'attributes' => ['name' => 'Test Envelope']
+        'attributes' => ['name' => 'Test Envelope'],
     ]);
     $envelopeId = $envelope['data']['id'];
 
@@ -74,8 +73,8 @@ it('can fake requirement creation', function () {
         'type' => 'requirements',
         'attributes' => [
             'action' => 'agree',
-            'role' => 'sign'
-        ]
+            'role' => 'sign',
+        ],
     ]);
 
     expect($requirement)->toHaveKey('data');
@@ -98,7 +97,7 @@ it('can simulate failures', function () {
 
     expect(fn () => $fake->createEnvelope([
         'type' => 'envelopes',
-        'attributes' => ['name' => 'Test']
+        'attributes' => ['name' => 'Test'],
     ]))->toThrow(\Exception::class);
 });
 
@@ -107,14 +106,14 @@ it('can reset fake state', function () {
 
     $fake->createEnvelope([
         'type' => 'envelopes',
-        'attributes' => ['name' => 'Test']
+        'attributes' => ['name' => 'Test'],
     ]);
-    
+
     $envelopes = $fake->listEnvelopes();
     expect($envelopes['data'])->toHaveCount(1);
 
     $fake->reset();
-    
+
     $envelopes = $fake->listEnvelopes();
     expect($envelopes['data'])->toHaveCount(0);
 });
@@ -126,8 +125,8 @@ it('can fake template operations', function () {
         'type' => 'templates',
         'attributes' => [
             'name' => 'Contract Template',
-            'content_base64' => 'fake_base64_content'
-        ]
+            'content_base64' => 'fake_base64_content',
+        ],
     ]);
 
     expect($template)->toHaveKey('data');
@@ -142,16 +141,16 @@ it('can fake template operations', function () {
 
 it('can fake notification sending', function () {
     $fake = new ClicksignFake;
-    
+
     $envelope = $fake->createEnvelope([
         'type' => 'envelopes',
-        'attributes' => ['name' => 'Test Envelope']
+        'attributes' => ['name' => 'Test Envelope'],
     ]);
     $envelopeId = $envelope['data']['id'];
 
     $notification = $fake->sendNotification($envelopeId, [
         'type' => 'notifications',
-        'attributes' => ['message' => 'Test message']
+        'attributes' => ['message' => 'Test message'],
     ]);
 
     expect($notification)->toHaveKey('data');

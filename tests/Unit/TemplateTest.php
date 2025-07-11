@@ -20,8 +20,8 @@ it('can create template from array', function () {
             'name' => 'NDA Template',
             'description' => 'Non-disclosure agreement template',
             'created_at' => '2024-01-01T00:00:00Z',
-            'updated_at' => '2024-01-01T12:00:00Z'
-        ]
+            'updated_at' => '2024-01-01T12:00:00Z',
+        ],
     ];
 
     $template = Template::fromArray($data);
@@ -56,7 +56,7 @@ it('can create template with metadata', function () {
         metadata: [
             'department' => 'HR',
             'category' => 'employment',
-            'required_fields' => ['employee_name', 'start_date', 'salary']
+            'required_fields' => ['employee_name', 'start_date', 'salary'],
         ]
     );
 
@@ -72,8 +72,8 @@ it('can handle template with null values', function () {
         'attributes' => [
             'name' => 'Simple Template',
             'description' => null,
-            'content' => null
-        ]
+            'content' => null,
+        ],
     ];
 
     $template = Template::fromArray($data);
@@ -85,7 +85,7 @@ it('can handle template with null values', function () {
 
 it('can create template with content', function () {
     $content = 'This is a contract between {{company_name}} and {{client_name}}...';
-    
+
     $template = new Template(
         name: 'Dynamic Contract',
         content: $content
@@ -113,7 +113,7 @@ it('can get template variables from content', function () {
     );
 
     $variables = $template->getVariables();
-    
+
     expect($variables)->toContain('name');
     expect($variables)->toContain('order_id');
     expect($variables)->toHaveCount(2);
@@ -125,8 +125,8 @@ it('can check if template is active', function () {
         'id' => 'template-1',
         'attributes' => [
             'name' => 'Active Template',
-            'status' => 'active'
-        ]
+            'status' => 'active',
+        ],
     ]);
 
     $inactiveTemplate = Template::fromArray([
@@ -134,8 +134,8 @@ it('can check if template is active', function () {
         'id' => 'template-2',
         'attributes' => [
             'name' => 'Inactive Template',
-            'status' => 'inactive'
-        ]
+            'status' => 'inactive',
+        ],
     ]);
 
     expect($activeTemplate->isActive())->toBeTrue();

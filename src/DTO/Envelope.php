@@ -22,7 +22,7 @@ class Envelope
     ) {}
 
     public static function create(
-        string $name, 
+        string $name,
         ?string $locale = null,
         ?bool $autoClose = null,
         ?int $remindInterval = null,
@@ -75,8 +75,8 @@ class Envelope
                 'deadline_at' => $this->deadlineAt,
                 'status' => $this->status,
                 'metadata' => $this->metadata,
-            ], fn($value) => $value !== null)
-        ], fn($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null),
+        ], fn ($value) => $value !== null && $value !== []);
     }
 
     public function toUpdateArray(): array
@@ -93,8 +93,8 @@ class Envelope
                 'deadline_at' => $this->deadlineAt,
                 'status' => $this->status,
                 'metadata' => $this->metadata,
-            ], fn($value) => $value !== null)
-        ], fn($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null),
+        ], fn ($value) => $value !== null && $value !== []);
     }
 
     /**

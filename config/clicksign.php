@@ -79,7 +79,7 @@ return [
             'remind_interval' => 3,
             'block_after_refusal' => true,
         ],
-        
+
         'signer' => [
             'has_documentation' => true,
             'refusable' => false,
@@ -87,14 +87,14 @@ return [
             'communicate_events' => [
                 'document_signed' => 'email',
                 'signature_request' => 'email',
-                'signature_reminder' => 'email'
-            ]
+                'signature_reminder' => 'email',
+            ],
         ],
-        
+
         'requirements' => [
             'signature_role' => 'sign',
-            'auth_method' => 'email'
-        ]
+            'auth_method' => 'email',
+        ],
     ],
 
     /*
