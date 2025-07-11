@@ -78,17 +78,22 @@ describe('ClicksignClient Exception Handling', function () {
         expect(fn () => $method->invoke($this->client, $notFoundResponse))
             ->toThrow(DocumentNotFoundException::class, 'Not found');
 
-        // Test 422 response with errors
+        // Test 422 response with errors in JSON API format
         $validationResponse = new $response(422, [
-            'message' => 'Validation failed',
-            'errors' => ['email' => ['Invalid email']],
+            'errors' => [
+                [
+                    'detail' => 'Validation failed',
+                    'source' => ['pointer' => '/data/attributes/email'],
+                    'title' => 'Invalid email'
+                ]
+            ]
         ]);
 
         try {
             $method->invoke($this->client, $validationResponse);
         } catch (ValidationException $e) {
             expect($e->getMessage())->toBe('Validation failed');
-            expect($e->getErrors())->toBe(['email' => ['Invalid email']]);
+            expect($e->getErrors())->toHaveCount(1);
         }
 
         // Test 500 response

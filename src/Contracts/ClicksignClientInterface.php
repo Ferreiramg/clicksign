@@ -4,43 +4,42 @@ namespace Clicksign\Contracts;
 
 interface ClicksignClientInterface
 {
-    /**
-     * Create a new document
-     */
-    public function createDocument(array $data): array;
+    // Envelope operations
+    public function createEnvelope(array $data): array;
+    public function getEnvelope(string $envelopeId): array;
+    public function updateEnvelope(string $envelopeId, array $data): array;
+    public function listEnvelopes(array $filters = []): array;
 
-    /**
-     * Get document details
-     */
-    public function getDocument(string $key): array;
+    // Document operations
+    public function createDocument(string $envelopeId, array $data): array;
+    public function getDocument(string $envelopeId, string $documentId): array;
+    public function listDocuments(string $envelopeId): array;
 
-    /**
-     * List all documents
-     */
-    public function listDocuments(array $filters = []): array;
+    // Signer operations
+    public function createSigner(string $envelopeId, array $data): array;
+    public function getSigner(string $envelopeId, string $signerId): array;
+    public function listSigners(string $envelopeId): array;
+    public function updateSigner(string $envelopeId, string $signerId, array $data): array;
+    public function deleteSigner(string $envelopeId, string $signerId): array;
 
-    /**
-     * Add a signer to a document
-     */
-    public function addSigner(string $documentKey, array $signerData): array;
+    // Requirement operations
+    public function createRequirement(string $envelopeId, array $data): array;
+    public function getRequirement(string $envelopeId, string $requirementId): array;
+    public function listRequirements(string $envelopeId): array;
+    public function deleteRequirement(string $envelopeId, string $requirementId): array;
+    public function bulkRequirements(string $envelopeId, array $operations): array;
 
-    /**
-     * Remove a signer from a document
-     */
-    public function removeSigner(string $documentKey, string $signerKey): array;
+    // Notification operations
+    public function sendNotification(string $envelopeId, array $data = []): array;
 
-    /**
-     * Get document download URL
-     */
-    public function getDownloadUrl(string $documentKey): string;
+    // Template operations
+    public function createTemplate(array $data): array;
+    public function getTemplate(string $templateId): array;
+    public function listTemplates(array $filters = []): array;
+    public function updateTemplate(string $templateId, array $data): array;
+    public function deleteTemplate(string $templateId): array;
 
-    /**
-     * Cancel a document
-     */
-    public function cancelDocument(string $documentKey): array;
-
-    /**
-     * Resend notification to signers
-     */
-    public function resendNotification(string $documentKey, array $signerKeys = []): array;
+    // Events
+    public function getDocumentEvents(string $envelopeId, string $documentId): array;
+    public function getEnvelopeEvents(string $envelopeId): array;
 }

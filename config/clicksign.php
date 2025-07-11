@@ -21,11 +21,34 @@ return [
     |--------------------------------------------------------------------------
     |
     | The base URL for the Clicksign API. By default, this points to the
-    | production API. You can change this to the sandbox URL for testing.
+    | production API v3. You can change this to the sandbox URL for testing.
     |
     */
 
-    'base_url' => env('CLICKSIGN_BASE_URL', 'https://app.clicksign.com/api/v1'),
+    'base_url' => env('CLICKSIGN_BASE_URL', 'https://app.clicksign.com/api/v3'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sandbox Mode
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, this will use the Clicksign sandbox environment.
+    | Useful for testing and development.
+    |
+    */
+
+    'sandbox' => env('CLICKSIGN_SANDBOX', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sandbox URL
+    |--------------------------------------------------------------------------
+    |
+    | The sandbox URL for testing purposes.
+    |
+    */
+
+    'sandbox_url' => env('CLICKSIGN_SANDBOX_URL', 'https://sandbox.clicksign.com/api/v3'),
 
     /*
     |--------------------------------------------------------------------------
@@ -45,15 +68,33 @@ return [
     | Default Settings
     |--------------------------------------------------------------------------
     |
-    | Default settings for document creation and signing process.
+    | Default settings for envelopes and signing process in API v3.
     |
     */
 
     'defaults' => [
-        'skip_email' => false,
-        'ordered' => false,
-        'delivery_method' => 'email',
-        'authentication_method' => 'email',
+        'envelope' => [
+            'locale' => 'pt-BR',
+            'auto_close' => true,
+            'remind_interval' => 3,
+            'block_after_refusal' => true,
+        ],
+        
+        'signer' => [
+            'has_documentation' => true,
+            'refusable' => false,
+            'group' => 1,
+            'communicate_events' => [
+                'document_signed' => 'email',
+                'signature_request' => 'email',
+                'signature_reminder' => 'email'
+            ]
+        ],
+        
+        'requirements' => [
+            'signature_role' => 'sign',
+            'auth_method' => 'email'
+        ]
     ],
 
     /*

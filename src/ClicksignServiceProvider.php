@@ -18,10 +18,14 @@ class ClicksignServiceProvider extends ServiceProvider implements DeferrableProv
 
         $this->app->singleton(ClicksignClientInterface::class, function ($app) {
             $config = $app['config']['clicksign'];
+            
+            $baseUrl = $config['sandbox'] 
+                ? $config['sandbox_url'] 
+                : $config['base_url'];
 
             return new ClicksignClient(
                 accessToken: $config['access_token'],
-                baseUrl: $config['base_url']
+                baseUrl: $baseUrl
             );
         });
 

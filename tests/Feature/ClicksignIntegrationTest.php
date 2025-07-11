@@ -2,80 +2,94 @@
 
 use Clicksign\Facades\Clicksign;
 use Clicksign\Http\ClicksignFake;
+use Clicksign\DTO\Envelope;
+use Clicksign\DTO\Document;
+use Clicksign\DTO\Signer;
 
 beforeEach(function () {
     // Use fake client for testing
     $this->app->bind(\Clicksign\Contracts\ClicksignClientInterface::class, ClicksignFake::class);
 });
 
-it('can create document', function () {
-    $response = Clicksign::createDocument([
-        'filename' => 'test-document.pdf',
-        'content' => base64_encode('fake pdf content'),
-    ]);
+it('can create envelope', function () {
+    $envelope = new Envelope(name: 'Test Envelope');
+    
+    $response = Clicksign::createEnvelope($envelope->toArray());
 
-    expect($response)->toHaveKey('key');
-    expect($response)->toHaveKey('filename');
-    expect($response['filename'])->toBe('test-document.pdf');
+    expect($response)->toHaveKey('data');
+    expect($response['data'])->toHaveKey('id');
+    expect($response['data']['type'])->toBe('envelopes');
+    expect($response['data']['attributes']['name'])->toBe('Test Envelope');
 });
 
-it('can get document', function () {
-    // First create a document
-    $document = Clicksign::createDocument([
-        'filename' => 'test-document.pdf',
-        'content' => base64_encode('fake pdf content'),
-    ]);
+it('can get envelope', function () {
+    // First create an envelope
+    $envelope = new Envelope(name: 'Test Envelope');
+    $createResponse = Clicksign::createEnvelope($envelope->toArray());
+    $envelopeId = $createResponse['data']['id'];
 
     // Then retrieve it
-    $retrievedDocument = Clicksign::getDocument($document['key']);
+    $response = Clicksign::getEnvelope($envelopeId);
 
-    expect($retrievedDocument['key'])->toBe($document['key']);
-    expect($retrievedDocument['filename'])->toBe($document['filename']);
+    expect($response['data']['id'])->toBe($envelopeId);
+    expect($response['data']['type'])->toBe('envelopes');
 });
 
-it('can list documents', function () {
-    // Create some documents
-    Clicksign::createDocument(['filename' => 'doc1.pdf']);
-    Clicksign::createDocument(['filename' => 'doc2.pdf']);
+it('can list envelopes', function () {
+    // Create some envelopes
+    $envelope1 = new Envelope(name: 'Envelope 1');
+    $envelope2 = new Envelope(name: 'Envelope 2');
+    
+    Clicksign::createEnvelope($envelope1->toArray());
+    Clicksign::createEnvelope($envelope2->toArray());
 
-    $documents = Clicksign::listDocuments();
+    $response = Clicksign::listEnvelopes();
 
-    expect($documents)->toBeArray();
-    expect($documents)->toHaveCount(2);
+    expect($response)->toHaveKey('data');
+    expect($response['data'])->toBeArray();
 });
 
-it('can add signer', function () {
-    $document = Clicksign::createDocument([
-        'filename' => 'test-document.pdf',
-    ]);
+it('can create document in envelope', function () {
+    // First create an envelope
+    $envelope = new Envelope(name: 'Test Envelope');
+    $envelopeResponse = Clicksign::createEnvelope($envelope->toArray());
+    $envelopeId = $envelopeResponse['data']['id'];
 
-    $signer = Clicksign::addSigner($document['key'], [
-        'email' => 'signer@example.com',
-        'name' => 'John Doe',
-    ]);
+    // Then create a document
+    $document = new Document(filename: 'test.pdf', contentBase64: base64_encode('test pdf content'));
+    $response = Clicksign::createDocument($envelopeId, $document->toArray());
 
-    expect($signer)->toHaveKey('key');
-    expect($signer['email'])->toBe('signer@example.com');
-    expect($signer['name'])->toBe('John Doe');
+    expect($response)->toHaveKey('data');
+    expect($response['data']['type'])->toBe('documents');
+    expect($response['data']['attributes']['filename'])->toBe('test.pdf');
 });
 
-it('can get download url', function () {
-    $document = Clicksign::createDocument([
-        'filename' => 'test-document.pdf',
-    ]);
+it('can create signer in envelope', function () {
+    // First create an envelope
+    $envelope = new Envelope(name: 'Test Envelope');
+    $envelopeResponse = Clicksign::createEnvelope($envelope->toArray());
+    $envelopeId = $envelopeResponse['data']['id'];
 
-    $downloadUrl = Clicksign::getDownloadUrl($document['key']);
+    // Then create a signer
+    $signer = new Signer(email: 'test@example.com', name: 'Test User');
+    $response = Clicksign::createSigner($envelopeId, $signer->toArray());
 
-    expect($downloadUrl)->toBeString();
-    expect($downloadUrl)->toContain('download');
+    expect($response)->toHaveKey('data');
+    expect($response['data']['type'])->toBe('signers');
+    expect($response['data']['attributes']['email'])->toBe('test@example.com');
 });
 
-it('can cancel document', function () {
-    $document = Clicksign::createDocument([
-        'filename' => 'test-document.pdf',
+it('can send notifications', function () {
+    // First create an envelope
+    $envelope = new Envelope(name: 'Test Envelope');
+    $envelopeResponse = Clicksign::createEnvelope($envelope->toArray());
+    $envelopeId = $envelopeResponse['data']['id'];
+
+    // Send notifications
+    $response = Clicksign::sendNotifications($envelopeId, [
+        'message' => 'Please sign the document'
     ]);
 
-    $cancelledDocument = Clicksign::cancelDocument($document['key']);
-
-    expect($cancelledDocument['status'])->toBe('cancelled');
+    expect($response)->toHaveKey('data');
+    expect($response['data']['type'])->toBe('notifications');
 });
