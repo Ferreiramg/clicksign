@@ -10,8 +10,7 @@ class SignatureRequest
         public readonly array $signers = [],
         public readonly bool $skipEmail = false,
         public readonly bool $ordered = false,
-        public readonly ?string $message = null,
-        public readonly ?array $metadata = []
+        public readonly ?string $message = null
     ) {}
 
     public static function create(string $documentPath, string $filename): self
@@ -45,8 +44,7 @@ class SignatureRequest
             $signers,
             $this->skipEmail,
             $this->ordered,
-            $this->message,
-            $this->metadata
+            $this->message
         );
     }
 
@@ -58,21 +56,7 @@ class SignatureRequest
             $this->signers,
             $this->skipEmail,
             $this->ordered,
-            $message,
-            $this->metadata
-        );
-    }
-
-    public function withMetadata(array $metadata): self
-    {
-        return new self(
-            $this->documentPath,
-            $this->filename,
-            $this->signers,
-            $this->skipEmail,
-            $this->ordered,
-            $this->message,
-            $metadata
+            $message
         );
     }
 
@@ -84,8 +68,7 @@ class SignatureRequest
             $this->signers,
             $skip,
             $this->ordered,
-            $this->message,
-            $this->metadata
+            $this->message
         );
     }
 
@@ -97,8 +80,7 @@ class SignatureRequest
             $this->signers,
             $this->skipEmail,
             $ordered,
-            $this->message,
-            $this->metadata
+            $this->message
         );
     }
 
@@ -111,7 +93,6 @@ class SignatureRequest
             'skip_email' => $this->skipEmail,
             'ordered' => $this->ordered,
             'message' => $this->message,
-            'metadata' => $this->metadata,
         ], fn ($value) => $value !== null && $value !== false && $value !== []);
     }
 }

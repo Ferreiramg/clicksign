@@ -75,8 +75,8 @@ class Envelope
                 'deadline_at' => $this->deadlineAt,
                 'status' => $this->status,
                 'metadata' => $this->metadata,
-            ], fn ($value) => $value !== null),
-        ], fn ($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null || empty($value)),
+        ], fn ($value) => $value !== null && ! empty($value));
     }
 
     public function toUpdateArray(): array
@@ -93,8 +93,8 @@ class Envelope
                 'deadline_at' => $this->deadlineAt,
                 'status' => $this->status,
                 'metadata' => $this->metadata,
-            ], fn ($value) => $value !== null),
-        ], fn ($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null || empty($value)),
+        ], fn ($value) => $value !== null && ! empty($value));
     }
 
     /**

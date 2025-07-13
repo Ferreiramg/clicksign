@@ -44,19 +44,24 @@ class Document
                 'content_base64' => $this->contentBase64,
                 'template' => $this->template,
                 'metadata' => $this->metadata,
-            ], fn ($value) => $value !== null),
-        ], fn ($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null || empty($value)),
+        ], fn ($value) => $value !== null && ! empty($value));
     }
 
     /**
      * Create a document from file content
      */
-    public static function fromFile(string $filename, string $contentBase64, ?array $metadata = null): self
+    public static function fromFile(string $filename, string $contentBase64, ?array $metadata = []): self
     {
+        $mt = null;
+        if (! empty($metadata)) {
+            $mt = json_encode($metadata);
+        }
+
         return new self(
             filename: $filename,
             contentBase64: $contentBase64,
-            metadata: $metadata
+            metadata: $mt
         );
     }
 
@@ -65,13 +70,17 @@ class Document
      */
     public static function fromTemplate(string $filename, string $templateId, array $templateData = [], ?array $metadata = null): self
     {
+        $template = [
+            'key' => $templateId,
+            'data' => $templateData,
+        ];
+        if (! empty($metadata)) {
+            $template['metadata'] = json_encode($metadata);
+        }
+
         return new self(
             filename: $filename,
-            template: [
-                'key' => $templateId,
-                'data' => $templateData,
-                'metadata' => $metadata ?? [],
-            ]
+            template: $template
         );
     }
 

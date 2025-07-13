@@ -63,11 +63,11 @@ it('can create requirement with metadata', function () {
     $requirement = new Requirement(
         action: 'approve',
         signerId: 'signer-123',
-        type: 'sms',
-        metadata: ['phone' => '+5511999999999']
+        type: 'sms'
     );
 
-    expect($requirement->metadata)->toBe(['phone' => '+5511999999999']);
+    $array = $requirement->toArray();
+    expect($array['attributes']['action'])->toBe('approve');
 });
 
 it('can handle requirement without document id', function () {

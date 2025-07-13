@@ -17,8 +17,7 @@ class Signer
         public readonly ?string $status = null,
         public readonly ?string $signedAt = null,
         public readonly ?string $createdAt = null,
-        public readonly ?string $updatedAt = null,
-        public readonly ?array $metadata = []
+        public readonly ?string $updatedAt = null
     ) {}
 
     public static function fromArray(array $data): self
@@ -38,8 +37,7 @@ class Signer
             status: $attributes['status'] ?? null,
             signedAt: $attributes['signed_at'] ?? null,
             createdAt: $attributes['created_at'] ?? null,
-            updatedAt: $attributes['updated_at'] ?? null,
-            metadata: $attributes['metadata'] ?? []
+            updatedAt: $attributes['updated_at'] ?? null
         );
     }
 
@@ -56,9 +54,8 @@ class Signer
                 'refusable' => $this->refusable,
                 'group' => $this->group,
                 'communicate_events' => $this->communicateEvents,
-                'metadata' => $this->metadata,
-            ], fn ($value) => $value !== null),
-        ], fn ($value) => $value !== null && $value !== []);
+            ], fn ($value) => $value !== null || empty($value)),
+        ], fn ($value) => $value !== null && ! empty($value));
     }
 
     /**

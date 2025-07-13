@@ -14,8 +14,7 @@ class Requirement
         public readonly ?string $documentId = null,
         public readonly ?string $signerId = null,
         public readonly ?string $createdAt = null,
-        public readonly ?string $updatedAt = null,
-        public readonly ?array $metadata = []
+        public readonly ?string $updatedAt = null
     ) {}
 
     public static function fromArray(array $data): self
@@ -33,8 +32,7 @@ class Requirement
             documentId: $relationships['document']['data']['id'] ?? null,
             signerId: $relationships['signer']['data']['id'] ?? null,
             createdAt: $attributes['created_at'] ?? null,
-            updatedAt: $attributes['updated_at'] ?? null,
-            metadata: $attributes['metadata'] ?? []
+            updatedAt: $attributes['updated_at'] ?? null
         );
     }
 
@@ -48,7 +46,6 @@ class Requirement
                 'auth' => $this->auth,
                 'type' => $this->type,
                 'status' => $this->status,
-                'metadata' => $this->metadata,
             ], fn ($value) => $value !== null),
             'relationships' => [],
         ];

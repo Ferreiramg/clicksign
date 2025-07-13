@@ -340,7 +340,7 @@ Por favor, veja [CONTRIBUTING](CONTRIBUTING.md) para detalhes.
 
 ## Segurança
 
-Se você descobrir alguma vulnerabilidade de segurança, por favor envie um e-mail para ferreiramg@example.com ao invés de usar o issue tracker.
+Se você descobrir alguma vulnerabilidade de segurança, por favor envie um e-mail para luis@lpdeveloper.com.br ao invés de usar o issue tracker.
 
 ## Créditos
 
