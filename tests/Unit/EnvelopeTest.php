@@ -65,8 +65,7 @@ it('can convert envelope to array', function () {
     $envelope = new Envelope(
         name: 'Test Envelope',
         locale: 'pt-BR',
-        autoClose: true,
-        metadata: ['priority' => 'high']
+        autoClose: true
     );
 
     $array = $envelope->toArray();
@@ -75,7 +74,6 @@ it('can convert envelope to array', function () {
     expect($array['attributes']['name'])->toBe('Test Envelope');
     expect($array['attributes']['locale'])->toBe('pt-BR');
     expect($array['attributes']['auto_close'])->toBeTrue();
-    expect($array['attributes']['metadata'])->toBe(['priority' => 'high']);
 });
 
 it('can convert envelope to update array', function () {

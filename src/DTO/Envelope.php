@@ -17,8 +17,7 @@ class Envelope
         public readonly ?string $updatedAt = null,
         public readonly ?array $documents = [],
         public readonly ?array $signers = [],
-        public readonly ?array $requirements = [],
-        public readonly ?array $metadata = []
+        public readonly ?array $requirements = []
     ) {}
 
     public static function create(
@@ -57,8 +56,7 @@ class Envelope
             updatedAt: $attributes['updated_at'] ?? null,
             documents: $relationships['documents']['data'] ?? [],
             signers: $relationships['signers']['data'] ?? [],
-            requirements: $relationships['requirements']['data'] ?? [],
-            metadata: $attributes['metadata'] ?? []
+            requirements: $relationships['requirements']['data'] ?? []
         );
     }
 
@@ -74,7 +72,6 @@ class Envelope
                 'block_after_refusal' => $this->blockAfterRefusal,
                 'deadline_at' => $this->deadlineAt,
                 'status' => $this->status,
-                'metadata' => $this->metadata,
             ], fn ($value) => $value !== null || empty($value)),
         ], fn ($value) => $value !== null && ! empty($value));
     }
@@ -92,7 +89,6 @@ class Envelope
                 'block_after_refusal' => $this->blockAfterRefusal,
                 'deadline_at' => $this->deadlineAt,
                 'status' => $this->status,
-                'metadata' => $this->metadata,
             ], fn ($value) => $value !== null || empty($value)),
         ], fn ($value) => $value !== null && ! empty($value));
     }
@@ -118,8 +114,7 @@ class Envelope
             updatedAt: $this->updatedAt,
             documents: $documents,
             signers: $this->signers,
-            requirements: $this->requirements,
-            metadata: $this->metadata
+            requirements: $this->requirements
         );
     }
 
@@ -144,8 +139,7 @@ class Envelope
             updatedAt: $this->updatedAt,
             documents: $this->documents,
             signers: $signers,
-            requirements: $this->requirements,
-            metadata: $this->metadata
+            requirements: $this->requirements
         );
     }
 
