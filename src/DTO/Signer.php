@@ -11,6 +11,7 @@ class Signer
         public readonly ?string $birthday = null,
         public readonly ?string $phoneNumber = null,
         public readonly ?bool $hasDocumentation = null,
+        public readonly ?string $documentation = null,
         public readonly ?bool $refusable = null,
         public readonly ?int $group = null,
         public readonly ?array $communicateEvents = null,
@@ -31,8 +32,9 @@ class Signer
             birthday: $attributes['birthday'] ?? null,
             phoneNumber: $attributes['phone_number'] ?? null,
             hasDocumentation: $attributes['has_documentation'] ?? null,
-            refusable: $attributes['refusable'] ?? null,
-            group: $attributes['group'] ?? null,
+            documentation: $attributes['documentation'] ?? null,
+            refusable: $attributes['refusable'] ?? true,
+            group: $attributes['group'] ?? 1,
             communicateEvents: $attributes['communicate_events'] ?? null,
             status: $attributes['status'] ?? null,
             signedAt: $attributes['signed_at'] ?? null,
@@ -43,19 +45,25 @@ class Signer
 
     public function toArray(): array
     {
-        return array_filter([
+        $return = [
             'type' => 'signers',
-            'attributes' => array_filter([
+            'attributes' => [
                 'name' => $this->name,
                 'email' => $this->email,
-                'birthday' => $this->birthday,
                 'phone_number' => $this->phoneNumber,
                 'has_documentation' => $this->hasDocumentation,
                 'refusable' => $this->refusable,
                 'group' => $this->group,
                 'communicate_events' => $this->communicateEvents,
-            ], fn ($value) => $value !== null || empty($value)),
-        ], fn ($value) => $value !== null && ! empty($value));
+            ],
+        ];
+
+        if ($this->hasDocumentation) {
+            $return['attributes']['documentation'] = $this->documentation;
+            $return['attributes']['birthday'] = $this->birthday;
+        }
+
+        return $return;
     }
 
     /**
@@ -65,6 +73,9 @@ class Signer
         string $name,
         string $email,
         ?string $birthday = null,
+        ?string $phoneNumber = null,
+        ?string $documentation = null,
+        ?bool $refusable = true,
         ?bool $hasDocumentation = null,
         ?array $communicateEvents = null
     ): self {
@@ -72,6 +83,9 @@ class Signer
             name: $name,
             email: $email,
             birthday: $birthday,
+            phoneNumber: $phoneNumber,
+            documentation: $documentation,
+            refusable: $refusable,
             hasDocumentation: $hasDocumentation,
             communicateEvents: $communicateEvents ?? [
                 'document_signed' => 'email',
