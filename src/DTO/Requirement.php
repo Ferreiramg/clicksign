@@ -43,7 +43,7 @@ class Requirement
                 'role' => $this->role,
                 'auth' => $this->auth,
                 'status' => $this->status,
-            ], fn($value) => $value !== null),
+            ], fn ($value) => $value !== null),
             'relationships' => [],
         ];
 
