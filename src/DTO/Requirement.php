@@ -9,7 +9,6 @@ class Requirement
         public readonly ?string $action = null,
         public readonly ?string $role = null,
         public readonly ?string $auth = null,
-        public readonly ?string $type = null,
         public readonly ?string $status = null,
         public readonly ?string $documentId = null,
         public readonly ?string $signerId = null,
@@ -27,7 +26,6 @@ class Requirement
             action: $attributes['action'] ?? null,
             role: $attributes['role'] ?? null,
             auth: $attributes['auth'] ?? null,
-            type: $attributes['type'] ?? null,
             status: $attributes['status'] ?? null,
             documentId: $relationships['document']['data']['id'] ?? null,
             signerId: $relationships['signer']['data']['id'] ?? null,
@@ -44,7 +42,6 @@ class Requirement
                 'action' => $this->action,
                 'role' => $this->role,
                 'auth' => $this->auth,
-                'type' => $this->type,
                 'status' => $this->status,
             ], fn ($value) => $value !== null),
             'relationships' => [],
@@ -72,11 +69,11 @@ class Requirement
     /**
      * Create a signature requirement
      */
-    public static function createSignatureRequirement(string $documentId, string $signerId, string $type = 'click'): self
+    public static function createSignatureRequirement(string $documentId, string $signerId, string $role = 'sign'): self
     {
         return new self(
-            action: 'sign',
-            type: $type,
+            action: 'agree',
+            role: $role,
             documentId: $documentId,
             signerId: $signerId
         );
@@ -85,11 +82,11 @@ class Requirement
     /**
      * Create an authentication requirement
      */
-    public static function createAuthRequirement(string $signerId, string $type = 'email'): self
+    public static function createAuthRequirement(string $signerId, string $auth = 'email'): self
     {
         return new self(
-            action: 'approve',
-            type: $type,
+            action: 'provide_evidence',
+            auth: $auth,
             signerId: $signerId
         );
     }
@@ -99,7 +96,7 @@ class Requirement
      */
     public function isSignatureRequirement(): bool
     {
-        return $this->action === 'agree' || $this->action === 'sign';
+        return $this->action === 'agree' || $this->role === 'sign';
     }
 
     /**

@@ -72,7 +72,7 @@ class ClicksignWorkflow
             $signatureRequirement = Requirement::createSignatureRequirement(
                 documentId: $documentId,
                 signerId: $signerId,
-                type: $requirementOptions['type'] ?? 'click'
+                role: $requirementOptions['type'] ?? 'sign'
             );
 
             $signatureReqResponse = $this->client->createRequirement($envelopeId, $signatureRequirement->toArray());
@@ -81,7 +81,7 @@ class ClicksignWorkflow
             // Create authentication requirement
             $authRequirement = Requirement::createAuthRequirement(
                 signerId: $signerId,
-                type: $requirementOptions['auth'] ?? 'email'
+                auth: $requirementOptions['auth'] ?? 'email'
             );
 
             $authReqResponse = $this->client->createRequirement($envelopeId, $authRequirement->toArray());
@@ -170,7 +170,7 @@ class ClicksignWorkflow
             $signatureRequirement = Requirement::createSignatureRequirement(
                 documentId: $documentId,
                 signerId: $signerId,
-                type: $requirementOptions['type'] ?? 'click'
+                role: $requirementOptions['type'] ?? 'click'
             );
 
             $signatureReqResponse = $this->client->createRequirement($envelopeId, $signatureRequirement->toArray());
@@ -179,7 +179,7 @@ class ClicksignWorkflow
             // Create authentication requirement
             $authRequirement = Requirement::createAuthRequirement(
                 signerId: $signerId,
-                type: $requirementOptions['auth'] ?? 'email'
+                auth: $requirementOptions['auth'] ?? 'email'
             );
 
             $authReqResponse = $this->client->createRequirement($envelopeId, $authRequirement->toArray());

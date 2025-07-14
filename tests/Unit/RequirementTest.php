@@ -2,21 +2,21 @@
 
 use Clicksign\DTO\Requirement;
 
-it('can create signature requirement with custom type', function () {
+it('can create signature requirement with custom role', function () {
     $requirement = Requirement::createSignatureRequirement('doc-123', 'signer-456', 'draw');
 
-    expect($requirement->action)->toBe('sign');
+    expect($requirement->action)->toBe('agree');
     expect($requirement->documentId)->toBe('doc-123');
     expect($requirement->signerId)->toBe('signer-456');
-    expect($requirement->type)->toBe('draw');
+    expect($requirement->role)->toBe('draw');
 });
 
 it('can create auth requirement with phone', function () {
     $requirement = Requirement::createAuthRequirement('signer-789', 'phone');
 
-    expect($requirement->action)->toBe('approve');
+    expect($requirement->action)->toBe('provide_evidence');
     expect($requirement->signerId)->toBe('signer-789');
-    expect($requirement->type)->toBe('phone');
+    expect($requirement->auth)->toBe('phone');
 });
 
 it('can create requirement from array', function () {
@@ -25,7 +25,7 @@ it('can create requirement from array', function () {
         'id' => 'req-123',
         'attributes' => [
             'action' => 'sign',
-            'type' => 'click',
+            'role' => 'click',
         ],
         'relationships' => [
             'document' => ['data' => ['id' => 'doc-123']],
@@ -37,7 +37,7 @@ it('can create requirement from array', function () {
 
     expect($requirement->id)->toBe('req-123');
     expect($requirement->action)->toBe('sign');
-    expect($requirement->type)->toBe('click');
+    expect($requirement->role)->toBe('click');
     expect($requirement->documentId)->toBe('doc-123');
     expect($requirement->signerId)->toBe('signer-456');
 });
@@ -47,14 +47,14 @@ it('can convert requirement to array', function () {
         action: 'sign',
         documentId: 'doc-123',
         signerId: 'signer-456',
-        type: 'click'
+        role: 'click'
     );
 
     $array = $requirement->toArray();
 
     expect($array['type'])->toBe('requirements');
     expect($array['attributes']['action'])->toBe('sign');
-    expect($array['attributes']['type'])->toBe('click');
+    expect($array['attributes']['role'])->toBe('click');
     expect($array['relationships']['document']['data']['id'])->toBe('doc-123');
     expect($array['relationships']['signer']['data']['id'])->toBe('signer-456');
 });
@@ -63,7 +63,7 @@ it('can create requirement with metadata', function () {
     $requirement = new Requirement(
         action: 'approve',
         signerId: 'signer-123',
-        type: 'sms'
+        auth: 'sms'
     );
 
     $array = $requirement->toArray();
@@ -75,7 +75,7 @@ it('can handle requirement without document id', function () {
 
     expect($requirement->documentId)->toBeNull();
     expect($requirement->signerId)->toBe('signer-123');
-    expect($requirement->action)->toBe('approve');
+    expect($requirement->action)->toBe('provide_evidence');
 });
 
 it('can check if requirement is signature type', function () {

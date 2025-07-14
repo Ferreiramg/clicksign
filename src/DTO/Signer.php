@@ -34,7 +34,7 @@ class Signer
             hasDocumentation: $attributes['has_documentation'] ?? null,
             documentation: $attributes['documentation'] ?? null,
             refusable: $attributes['refusable'] ?? true,
-            group: $attributes['group'] ?? 1,
+            group: $attributes['group'] ?? '1',
             communicateEvents: $attributes['communicate_events'] ?? null,
             status: $attributes['status'] ?? null,
             signedAt: $attributes['signed_at'] ?? null,
@@ -53,10 +53,13 @@ class Signer
                 'phone_number' => $this->phoneNumber,
                 'has_documentation' => $this->hasDocumentation,
                 'refusable' => $this->refusable,
-                'group' => $this->group,
                 'communicate_events' => $this->communicateEvents,
             ],
         ];
+
+        if ($this->group) {
+            $return['attributes']['group'] = $this->group;
+        }
 
         if ($this->hasDocumentation) {
             $return['attributes']['documentation'] = $this->documentation;
