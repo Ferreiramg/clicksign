@@ -70,7 +70,7 @@ class Envelope
                 'auto_close' => $this->autoClose,
                 'remind_interval' => $this->remindInterval,
                 'block_after_refusal' => $this->blockAfterRefusal,
-                'deadline_at' => $this->deadlineAt
+                'deadline_at' => $this->deadlineAt,
             ], fn ($value) => $value !== null || empty($value)),
         ], fn ($value) => $value !== null && ! empty($value));
     }
