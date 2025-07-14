@@ -37,15 +37,23 @@ class Document
 
     public function toArray(): array
     {
-        return array_filter([
+        $return = [
             'type' => 'documents',
-            'attributes' => array_filter([
+            'attributes' => [
                 'filename' => $this->filename,
                 'content_base64' => $this->contentBase64,
-                'template' => $this->template,
-                'metadata' => $this->metadata,
-            ], fn ($value) => $value !== null || empty($value)),
-        ], fn ($value) => $value !== null && ! empty($value));
+            ],
+        ];
+
+        if ($this->template !== null) {
+            $return['attributes']['template'] = $this->template;
+        }
+
+        if (! empty($this->metadata)) {
+            $return['attributes']['metadata'] = json_encode($this->metadata);
+        }
+
+        return $return;
     }
 
     /**
@@ -53,15 +61,11 @@ class Document
      */
     public static function fromFile(string $filename, string $contentBase64, ?array $metadata = []): self
     {
-        $mt = null;
-        if (! empty($metadata)) {
-            $mt = json_encode($metadata);
-        }
 
         return new self(
             filename: $filename,
             contentBase64: $contentBase64,
-            metadata: $mt
+            metadata: $metadata
         );
     }
 
