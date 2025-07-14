@@ -77,19 +77,43 @@ class Envelope
 
     public function toUpdateArray(): array
     {
-        return array_filter([
-            'id' => $this->id,
+        $attributes = [];
+
+        if ($this->name !== null) {
+            $attributes['name'] = $this->name;
+        }
+        if ($this->locale !== null) {
+            $attributes['locale'] = $this->locale;
+        }
+        if ($this->autoClose !== null) {
+            $attributes['auto_close'] = $this->autoClose;
+        }
+        if ($this->remindInterval !== null) {
+            $attributes['remind_interval'] = $this->remindInterval;
+        }
+        if ($this->blockAfterRefusal !== null) {
+            $attributes['block_after_refusal'] = $this->blockAfterRefusal;
+        }
+        if ($this->deadlineAt !== null) {
+            $attributes['deadline_at'] = $this->deadlineAt;
+        }
+        if ($this->status !== null) {
+            $attributes['status'] = $this->status;
+        }
+
+        $result = [
             'type' => 'envelopes',
-            'attributes' => array_filter([
-                'name' => $this->name,
-                'locale' => $this->locale,
-                'auto_close' => $this->autoClose,
-                'remind_interval' => $this->remindInterval,
-                'block_after_refusal' => $this->blockAfterRefusal,
-                'deadline_at' => $this->deadlineAt,
-                'status' => $this->status,
-            ], fn ($value) => $value !== null || empty($value)),
-        ], fn ($value) => $value !== null && ! empty($value));
+        ];
+
+        if ($this->id !== null) {
+            $result['id'] = $this->id;
+        }
+
+        if (! empty($attributes)) {
+            $result['attributes'] = $attributes;
+        }
+
+        return $result;
     }
 
     /**
