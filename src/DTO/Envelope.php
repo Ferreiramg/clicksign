@@ -103,15 +103,9 @@ class Envelope
 
         $result = [
             'type' => 'envelopes',
+            'id' => $this->id,
+            'attributes' => $attributes,
         ];
-
-        if ($this->id !== null) {
-            $result['id'] = $this->id;
-        }
-
-        if (! empty($attributes)) {
-            $result['attributes'] = $attributes;
-        }
 
         return $result;
     }

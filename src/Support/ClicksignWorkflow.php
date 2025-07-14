@@ -97,7 +97,7 @@ class ClicksignWorkflow
      */
     public function startSignatureProcess(string $envelopeId): array
     {
-        $envelope = new Envelope(status: 'running');
+        $envelope = new Envelope(status: 'running', id: $envelopeId);
 
         return $this->client->updateEnvelope($envelopeId, $envelope->toUpdateArray());
     }
