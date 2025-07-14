@@ -43,7 +43,7 @@ class Requirement
                 'role' => $this->role,
                 'auth' => $this->auth,
                 'status' => $this->status,
-            ], fn ($value) => $value !== null),
+            ], fn($value) => $value !== null),
             'relationships' => [],
         ];
 
@@ -82,10 +82,11 @@ class Requirement
     /**
      * Create an authentication requirement
      */
-    public static function createAuthRequirement(string $signerId, string $auth = 'email'): self
+    public static function createAuthRequirement(string $documentId, string $signerId, string $auth = 'email'): self
     {
         return new self(
             action: 'provide_evidence',
+            documentId: $documentId,
             auth: $auth,
             signerId: $signerId
         );

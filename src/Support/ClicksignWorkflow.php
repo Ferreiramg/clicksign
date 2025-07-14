@@ -80,6 +80,7 @@ class ClicksignWorkflow
 
             // Create authentication requirement
             $authRequirement = Requirement::createAuthRequirement(
+                documentId: $documentId,
                 signerId: $signerId,
                 auth: $requirementOptions['auth'] ?? 'email'
             );
@@ -178,6 +179,7 @@ class ClicksignWorkflow
 
             // Create authentication requirement
             $authRequirement = Requirement::createAuthRequirement(
+                documentId: $documentId,
                 signerId: $signerId,
                 auth: $requirementOptions['auth'] ?? 'email'
             );
